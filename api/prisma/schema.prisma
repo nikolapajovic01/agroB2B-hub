@@ -1,0 +1,166 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                      Int                      @id @default(autoincrement())
+  email                   String                   @unique
+  password                String
+  name                    String?
+  phoneNumber             String
+  userType                String                   @default("individual")
+  isVerified              Boolean                  @default(false)
+  companyId               Int?
+  company                 Company?                 @relation(fields: [companyId], references: [id])
+  emailVerificationTokens EmailVerificationToken[]
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+}
+
+
+model Company {
+  id           Int            @id @default(autoincrement())
+  name         String
+  pibNumber    String?        @unique // Optional for individual users
+  isVerified   Boolean        @default(false)
+  type         String         @default("Mikro Preduzeće")
+  capacity     String         @default("100,000-200,000")
+  bonitet      String         @default("A")
+  certificates String[]       @default([])
+  photoUrl     String         @default("https://fruit-products.s3.eu-central-1.amazonaws.com/vecteezy_user-icon-on-transparent-background_19879198.png")
+  users        User[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  SellOffer    SellOffer[]
+  SellOfferBid SellOfferBid[]
+  BuyOffer     BuyOffer[]
+  BuyOfferBid  BuyOfferBid[]
+  ProductInterests ProductInterest[]
+  Notifications    Notification[]
+}
+
+model EmailVerificationToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model SellOffer {
+  id                   Int              @id @default(autoincrement())
+  variant              ProductVariant   @relation(fields: [variantId], references: [id])
+  variantId            Int
+  status               String
+  dateFrom             DateTime
+  dateTo               DateTime?
+  quantity             Decimal
+  city                 String
+  price                Decimal
+  photos               String[]
+  description          String?          @db.Text
+  administrativeStatus String
+  company              Company          @relation(fields: [companyId], references: [id])
+  companyId            Int
+  bids                 SellOfferBid[]
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+}
+
+
+model SellOfferBid {
+  id          Int       @id @default(autoincrement())
+  sellOffer   SellOffer @relation(fields: [sellOfferId], references: [id])
+  sellOfferId Int
+  company     Company   @relation(fields: [companyId], references: [id])
+  companyId   Int
+  price       Decimal?
+  status      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model BuyOffer {
+  id                   Int           @id @default(autoincrement())
+  product              String
+  status               String
+  dateFrom             DateTime
+  dateTo               DateTime?
+  quantity             Decimal?
+  city                 String
+  description          String?       @db.Text
+  administrativeStatus String
+  paymentDetails       String       @db.Text
+  company              Company       @relation(fields: [companyId], references: [id])
+  companyId            Int
+  bids                 BuyOfferBid[]
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+}
+
+model BuyOfferBid {
+  id         Int      @id @default(autoincrement())
+  buyOffer   BuyOffer @relation(fields: [buyOfferId], references: [id])
+  buyOfferId Int
+  company    Company  @relation(fields: [companyId], references: [id])
+  companyId  Int
+  price      Decimal
+  photos     String[] // Array of URLs
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Notification {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String   @db.Text
+  type        String   // "product_offer", "interest_response", etc.
+  link        String?
+  isRead      Boolean  @default(false)
+  company     Company  @relation(fields: [companyId], references: [id])
+  companyId   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ProductInterest {
+  id        Int      @id @default(autoincrement())
+  product   String
+  type      String   @default("subscription") // subscription or interest
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company   Company  @relation(fields: [companyId], references: [id])
+  companyId Int
+}
+
+model Product {
+  id        Int              @id @default(autoincrement())
+  name      String           @unique
+  image     String?
+  variants  ProductVariant[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model ProductVariant {
+  id        Int      @id @default(autoincrement())
+  name      String   // npr: "Zamrznuta", "Sveža (I klasa)"
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  sellOffers SellOffer[]     // povezane ponude
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
