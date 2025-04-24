@@ -148,11 +148,10 @@ const MapExportByCountry: React.FC = () => {
   };
 
   useEffect(() => {
-    const mapTwo = new jsVectorMap({
+    const mapInstance = new jsVectorMap({
       selector: '#mapTwo',
       map: 'world',
       zoomButtons: true,
-
       regionStyle: {
         initial: {
           fontFamily: 'Satoshi',
@@ -163,16 +162,18 @@ const MapExportByCountry: React.FC = () => {
           fill: '#3056D3',
         },
       },
-
       onRegionTooltipShow: function (tooltip: any, code: string) {
         if (code === 'EG') {
-          tooltip.selector.innerHTML =
-            tooltip.text() + ' <b>(Hello Russia)</b>';
+          tooltip.selector.innerHTML = tooltip.text() + ' <b>(Hello Russia)</b>';
         }
       },
     });
-    mapTwo();
-  });
+  
+    return () => {
+      mapInstance.destroy(); // ✅ čišćenje instance mape
+    };
+  }, []);
+  
 
   return (
     <div className="col-span-12 overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-6">

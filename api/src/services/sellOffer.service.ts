@@ -97,6 +97,11 @@ export const getAllSellOffersService = async () => {
     return await prisma.sellOffer.findMany({
       include: {
         company: true,
+        variant: {
+          include: {
+            product: true,
+          },
+        },
       },
       orderBy: {
         id: 'desc',

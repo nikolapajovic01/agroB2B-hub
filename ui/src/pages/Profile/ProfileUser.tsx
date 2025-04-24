@@ -7,7 +7,7 @@ import { getAuthToken } from '../../utils/authUtils';
 interface UserDetails {
   name: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
   userType: string;
   profilePhotoUrl?: string;
 }
@@ -75,9 +75,9 @@ const ProfileUser = () => {
               {user?.name}
             </h3>
             <p className="font-medium text-gray-600 dark:text-gray-400">{user?.email}</p>
-            <p className="font-medium text-gray-600 dark:text-gray-400">Telefon: {user?.phone}</p>
+            <p className="font-medium text-gray-600 dark:text-gray-400">Telefon: {user?.phoneNumber}</p>
             <p className="mt-2 font-medium text-sm text-primary">
-              Tip korisnika: {user?.userType}
+              Tip korisnika: {user?.userType === 'individual' ? 'Fizicko lice' : user?.userType}
             </p>
           </div>
         </div>

@@ -11,8 +11,10 @@ interface Product {
   id: number;
   name: string;
   image: string;
+  minPrice: number | null;
   variants: ProductVariant[];
 }
+
 
 const Prices: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,7 +22,7 @@ const Prices: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/products') // prilagodi ako koristiš drugi port
+    fetch('http://localhost:3000/api/products/overview') // prilagodi ako koristiš drugi port
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error('Greška pri povlačenju proizvoda:', err));
@@ -87,23 +89,41 @@ const Prices: React.FC = () => {
                 <h5 className="text-sm font-bold leading-6 text-black dark:text-white hover:text-primary">
                   {item.name}
                 </h5>
-                <p className="text-xs font-medium">
+                {/* <p className="text-xs font-medium">
                   {item.variants.length} varijanti
-                </p>
+                </p> */}
               </div>
             </div>
 
             <div className="text-right">
-                {item.variants.length > 0 && item.variants[0].price !== undefined ? (
-                  <p className="mb-1 font-medium text-black dark:text-white">
-                    {item.variants[0].price.toFixed(2)} €
+              {typeof item.minPrice === 'number' ? (
+                <div className="flex items-center justify-end gap-1.5">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Cena od</span>
+                  <p className="font-medium text-black dark:text-white">
+                    {item.minPrice.toFixed(2)} €
                   </p>
-                ) : (
-                  <p className="mb-1 text-sm text-gray-500 italic">
-                    Nema varijanti
-                  </p>
-                )}
-          </div>
+                  <span className="text-emerald-600 dark:text-emerald-400">
+                    <svg
+                      className="fill-current"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M6 0L12 6L10.6 7.4L7 3.8V12H5V3.8L1.4 7.4L0 6L6 0Z"
+                        fill=""
+                      />
+                    </svg>
+                  </span>
+                </div>
+              ) : (
+                <p className="mb-1 text-sm text-gray-500 italic">
+                  Nema aktivnih ponuda
+                </p>
+              )}
+            </div>
 
           </div>
         ))}

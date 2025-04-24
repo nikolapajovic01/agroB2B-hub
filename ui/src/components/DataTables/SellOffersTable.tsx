@@ -16,9 +16,18 @@ import { Column } from 'react-table';
 import Malina from '../../assets/images/raspberry.svg';
 import Borovnica from '../../assets/images/blueberries.svg';
 import Kupina from '../../assets/images/blackberry.svg';
-import Visnja from '../../assets/images/visnja.png';
+import Višnja from '../../assets/images/visnja.png';
 import Jagoda from '../../assets/images/strawberry.png';
 import Krompir from '../../assets/images/potato.svg';
+import Jabuka from '../../assets/images/apple.avif';
+import Aronija from '../../assets/images/aronia.png';
+import Grožđe from '../../assets/images/grozdje1.png';
+import Luk from '../../assets/images/onion.png';
+import Breskva from '../../assets/images/peach.avif';
+import Kajsija from '../../assets/images/peach.avif';
+//
+import Kruška from '../../assets/images/pear.png';
+import Šljiva from '../../assets/images/sljiva.png';
 
 // Product icon mapping
 const productIcons: { [key: string]: string } = {
@@ -26,15 +35,28 @@ const productIcons: { [key: string]: string } = {
   'Malina 90/10': Malina,
   'Borovnica': Borovnica,
   'Kupina': Kupina,
-  'Višnja': Visnja,
+  'Višnja': Višnja,
   'Jagoda': Jagoda,
   'Krompir crveni': Krompir,
   'Krompir beli': Krompir,
+  'Jabuka' : Jabuka,
+  'Aronija' : Aronija,
+  'Grožđe' : Grožđe,
+  'Luk' : Luk,
+  'Breskva' : Breskva,
+  'Kajsija' : Kajsija,
+  'Kruška' : Kruška,
+  'Šljiva' : Šljiva
 };
 
 interface SellOffer {
   id: number;
-  product: string;
+  variant: {
+    name: string;
+    product: {
+      name: string;
+    };
+  };
   dateFrom: string;
   dateTo: string;
   quantity: number;
@@ -150,13 +172,13 @@ const DataTableOne = () => {
   const columns: Column<SellOffer>[] = useMemo(() => [
     {
       Header: 'Proizvod',
-      accessor: 'product',
+      accessor: (row) => `${row.variant.product.name} - ${row.variant.name}`,
       Cell: ({ value }) => (
         <div className="flex items-center gap-3">
           <div className="h-8 w-8">
-            <img 
-              src={productIcons[value] || Malina} 
-              alt={value} 
+            <img
+              src={productIcons[value.split(' - ')[0]] || Malina}
+              alt={value}
               className="h-full w-full object-contain"
             />
           </div>
@@ -164,6 +186,7 @@ const DataTableOne = () => {
         </div>
       ),
     },
+    
     {
       Header: 'Važi od',
       accessor: 'dateFrom',
