@@ -12,6 +12,8 @@ import companyRoute from './routes/company.router'
 import offerRoute from './routes/offers.router'
 import notificationsRouter from './routes/notifications.router'
 import productRoute from './routes/product.router'
+import userRouter from './routes/user.router';
+
 
 import { errorHandler, handle404 } from './middleware/error.middleware'
 
@@ -47,6 +49,9 @@ app.use('/api/company', companyRoute)
 app.use('/api/offers', offerRoute)
 app.use('/api/notifications', notificationsRouter)
 app.use('/api/products', productRoute)
+
+app.use('/api/user', userRouter);
+
 
 // 404 and global error handling
 app.use(handle404)

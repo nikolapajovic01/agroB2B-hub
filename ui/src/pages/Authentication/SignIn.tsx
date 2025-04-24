@@ -16,7 +16,6 @@ const SignIn: React.FC = () => {
     setError('');
   
     try {
-      // 1. Login
       const loginResponse = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
@@ -38,11 +37,21 @@ const SignIn: React.FC = () => {
   
       const { token, user } = await loginResponse.json();
       console.log('Login successful, user:', user);
-      localStorage.setItem('authToken', token);
   
-      // 2. Check company verification
-      if (user.companyId === null) {
-        console.log('User has no company, proceeding to dashboard');
+      // ✅ Snimi authToken i userType
+      localStorage.setItem('authToken', token);
+      localStorage.removeItem('token'); // obriši stari token ako postoji
+      localStorage.setItem('userType', user.userType); // "company" ili "individual"
+  
+      // ✅ Redirekcija na osnovu userType
+      if (user.userType === 'individual') {
+        navigate('/buy-offers');
+        return;
+      }
+  
+      // ✅ Ako je kompanija, proveri status verifikacije
+      if (!user.companyId) {
+        console.log('User has no companyId, but is type company. Redirecting...');
         navigate('/dashboard');
         return;
       }
@@ -55,25 +64,24 @@ const SignIn: React.FC = () => {
   
       if (!verificationResponse.ok) {
         console.error('Verification response not OK:', verificationResponse.status);
-        throw new Error('Failed to verify company status');
+        throw new Error('Greška pri proveri verifikacije kompanije');
       }
   
       const verificationData = await verificationResponse.json();
       console.log('Verification data:', verificationData);
   
       if (!verificationData.isVerified) {
-        console.log('Company not verified, redirecting to not-verified page');
         navigate('/company-not-verified');
         return;
       }
   
-      // 3. If company is verified, proceed to dashboard
-      console.log('Company verified, proceeding to dashboard');
       navigate('/dashboard');
+  
     } catch (error: any) {
       setError(error.message);
     }
   };
+  
 
   return (
     <AuthLayout>

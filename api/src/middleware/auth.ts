@@ -11,6 +11,7 @@ interface JwtPayload {
 
 export interface AuthRequest extends Request {
   user?: {
+    userId: number;
     companyId: number
     userType: string
   }
@@ -36,6 +37,7 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     }
 
     req.user = {
+      userId: decoded.userId,
       companyId: decoded.companyId,
       userType: decoded.userType,
     }

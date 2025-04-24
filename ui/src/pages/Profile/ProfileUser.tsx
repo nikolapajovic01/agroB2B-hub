@@ -1,160 +1,84 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DefaultLayout from '../../layout/DefaultLayout';
+import { useEffect, useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import DefaultLayout from '../../layout/DefaultLayout';
+import CoverOne from '../../assets/images/cover-01.png';
 import { getAuthToken } from '../../utils/authUtils';
 
-interface UserData {
-  id: number;
-  email: string;
+interface UserDetails {
   name: string;
-  phoneNumber: string;
+  email: string;
+  phone: string;
   userType: string;
-  isVerified: boolean;
+  profilePhotoUrl?: string;
 }
 
 const ProfileUser = () => {
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [user, setUser] = useState<UserDetails | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserDetails = async () => {
       try {
         const token = getAuthToken();
-        if (!token) {
-          navigate('/auth/signin');
-          return;
-        }
+        if (!token) throw new Error('No auth token');
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/details`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
+        if (!response.ok) throw new Error('Failed to fetch user details');
 
         const data = await response.json();
-        setUserData(data);
+        setUser(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        setError(err instanceof Error ? err.message : 'Greška pri dohvatanju korisničkih podataka');
+        console.error('Greška:', err);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchUserData();
-  }, [navigate]);
+    fetchUserDetails();
+  }, []);
 
-  if (isLoading) {
-    return (
-      <DefaultLayout>
-        <Breadcrumb pageName="Profil korisnika" />
-        <div className="flex justify-center items-center h-64">
-          <p>Učitavanje...</p>
-        </div>
-      </DefaultLayout>
-    );
-  }
-
-  if (error) {
-    return (
-      <DefaultLayout>
-        <Breadcrumb pageName="Profil korisnika" />
-        <div className="flex justify-center items-center h-64">
-          <p className="text-red-500">Greška: {error}</p>
-        </div>
-      </DefaultLayout>
-    );
-  }
-
-  if (!userData) {
-    return (
-      <DefaultLayout>
-        <Breadcrumb pageName="Profil korisnika" />
-        <div className="flex justify-center items-center h-64">
-          <p>Nema podataka o korisniku</p>
-        </div>
-      </DefaultLayout>
-    );
-  }
+  if (loading) return <div>Loading...</div>;
 
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Profil korisnika" />
+      <Breadcrumb pageName="Moj Profil" />
 
-      <div className="grid grid-cols-1 gap-9">
-        <div className="flex flex-col gap-9">
-          {/* Personal Information */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Lični podaci
-              </h3>
+      <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="relative z-20 h-35 md:h-65">
+          <img
+            src={CoverOne}
+            alt="profile cover"
+            className="h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center"
+          />
+        </div>
+
+        <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11.5">
+          <div className="relative z-30 mx-auto -mt-22 h-30 w-full max-w-30 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3 flex items-center justify-center">
+            <div className="relative drop-shadow-2 w-full h-full grid place-items-center">
+              <img 
+                src={user?.profilePhotoUrl || '/default-user.png'} 
+                alt="profile" 
+                className="rounded-full w-full h-full object-cover"
+              />
             </div>
-            <div className="p-6.5">
-              <div className="mb-4.5">
-                <label className="mb-2.5 block text-black dark:text-white">
-                  Ime i prezime
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={userData.name}
-                    disabled
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                </div>
-              </div>
+          </div>
 
-              <div className="mb-4.5">
-                <label className="mb-2.5 block text-black dark:text-white">
-                  Email
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    value={userData.email}
-                    disabled
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4.5">
-                <label className="mb-2.5 block text-black dark:text-white">
-                  Broj telefona
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={userData.phoneNumber}
-                    disabled
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4.5">
-                <label className="mb-2.5 block text-black dark:text-white">
-                  Status verifikacije
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={userData.isVerified ? 'Verifikovan' : 'Nije verifikovan'}
-                    disabled
-                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-                      userData.isVerified ? 'text-success' : 'text-warning'
-                    }`}
-                  />
-                </div>
-              </div>
-            </div>
+          <div className="mt-4">
+            <h3 className="mb-1.5 text-2xl font-semibold text-black dark:text-white">
+              {user?.name}
+            </h3>
+            <p className="font-medium text-gray-600 dark:text-gray-400">{user?.email}</p>
+            <p className="font-medium text-gray-600 dark:text-gray-400">Telefon: {user?.phone}</p>
+            <p className="mt-2 font-medium text-sm text-primary">
+              Tip korisnika: {user?.userType}
+            </p>
           </div>
         </div>
       </div>
@@ -162,4 +86,4 @@ const ProfileUser = () => {
   );
 };
 
-export default ProfileUser; 
+export default ProfileUser;
