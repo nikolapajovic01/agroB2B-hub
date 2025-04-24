@@ -37,27 +37,38 @@ const SignIn: React.FC = () => {
       }
   
       const { token, user } = await loginResponse.json();
+      console.log('Login successful, user:', user);
       localStorage.setItem('authToken', token);
   
       // 2. Check company verification
+      if (user.companyId === null) {
+        console.log('User has no company, proceeding to dashboard');
+        navigate('/dashboard');
+        return;
+      }
+  
       const verificationResponse = await fetch(`${API_URL}/api/company/verification/${user.companyId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
   
+      if (!verificationResponse.ok) {
+        console.error('Verification response not OK:', verificationResponse.status);
+        throw new Error('Failed to verify company status');
+      }
+  
       const verificationData = await verificationResponse.json();
+      console.log('Verification data:', verificationData);
   
       if (!verificationData.isVerified) {
-        if(user.companyId === null){
-          navigate('/dashboard');
-          return;
-        }
+        console.log('Company not verified, redirecting to not-verified page');
         navigate('/company-not-verified');
         return;
       }
   
       // 3. If company is verified, proceed to dashboard
+      console.log('Company verified, proceeding to dashboard');
       navigate('/dashboard');
     } catch (error: any) {
       setError(error.message);

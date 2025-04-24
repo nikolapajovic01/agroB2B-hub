@@ -48,7 +48,7 @@ const SignUp: React.FC = () => {
         throw new Error(data.error || 'Greška pri registraciji');
       }
 
-      navigate('/login');
+      navigate('/auth/signin');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Greška pri registraciji');
     } finally {

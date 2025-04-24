@@ -8,7 +8,7 @@ import ExportByCountryContent from "../../components/Marketplace/ExportByCountry
 const ExportStatisticDashboard: React.FC = () => {
   return (
     <DefaultLayout>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+      {/* <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Ukupan izvoz" total="78,306 tona" rate="20%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
@@ -101,7 +101,8 @@ const ExportStatisticDashboard: React.FC = () => {
         <div className="col-span-12 xl:col-span-6">
           <ExportByCountryContent/>
         </div>
-      </div>
+      </div> */}
+
     </DefaultLayout>
   );
 };

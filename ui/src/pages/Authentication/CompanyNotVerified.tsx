@@ -1,6 +1,27 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { fetchCompanyDetails } from '../../services/companyService'; // ✅ koristi servis
 import { Link } from 'react-router-dom';
 
 const CompanyNotVerified = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkVerification = async () => {
+      try {
+        const company = await fetchCompanyDetails();
+
+        if (company?.isVerified) {
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        console.error('Greška u proveri verifikacije:', error);
+      }
+    };
+
+    checkVerification();
+  }, [navigate]);
+
   return (
     <div className="overflow-hidden px-4 dark:bg-boxdark-2 sm:px-8">
       <div className="flex h-screen flex-col items-center justify-center overflow-hidden">
@@ -55,4 +76,4 @@ const CompanyNotVerified = () => {
   );
 };
 
-export default CompanyNotVerified; 
+export default CompanyNotVerified;
