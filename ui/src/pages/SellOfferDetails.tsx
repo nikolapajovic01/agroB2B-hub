@@ -157,7 +157,7 @@ const SellOfferDetails = () => {
                 <div>
                   <span className="font-medium text-black dark:text-white">Sertifikati:</span>
                   <div className="mt-1 flex flex-wrap gap-2">
-                    {offer.company.certificates && offer.company.certificates.length > 0 ? (
+                    {offer.company?.certificates?.length > 0 ? (
                       offer.company.certificates.map((cert, index) => (
                         <span
                           key={index}
@@ -167,10 +167,13 @@ const SellOfferDetails = () => {
                         </span>
                       ))
                     ) : (
-                      <span className="text-gray-500 text-sm">Nema dostupnih sertifikata</span>
+                      <span className="text-gray-500 text-sm">
+                        {offer.company ? 'Nema dostupnih sertifikata' : 'Fizičko lice - nema sertifikate'}
+                      </span>
                     )}
                   </div>
                 </div>
+
               </div>
             </div>
 
@@ -182,20 +185,30 @@ const SellOfferDetails = () => {
                 {offer.description}
               </p>
               
-              <div className="mt-4 space-y-2">
+              {offer.company ? (
+                <>
+                  <div>
+                    <span className="font-medium text-black dark:text-white">Tip kompanije:</span>
+                    <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary bg-opacity-10 text-primary">
+                      {offer.company.type}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-black dark:text-white">Godišnja proizvodnja:</span>
+                    <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary bg-opacity-10 text-primary">
+                      {offer.company.capacity} kg
+                    </span>
+                  </div>
+                </>
+              ) : (
                 <div>
-                  <span className="font-medium text-black dark:text-white">Tip kompanije:</span>
+                  <span className="font-medium text-black dark:text-white">Kreator ponude:</span>
                   <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary bg-opacity-10 text-primary">
-                    {offer.company.type}
+                    Fizičko lice
                   </span>
                 </div>
-                <div>
-                  <span className="font-medium text-black dark:text-white">Godišnja proizvodnja:</span>
-                  <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary bg-opacity-10 text-primary">
-                    {offer.company.capacity} kg
-                  </span>
-                </div>
-              </div>
+              )}
+
             </div>
           </div>
 

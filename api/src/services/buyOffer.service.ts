@@ -21,7 +21,7 @@ export const createBuyOfferService = async (req: AuthRequest) => {
 
   const buyOffer = await prisma.buyOffer.create({
     data: {
-      product: fields.product?.[0] || '',
+      variantId: parseInt(fields.variantId?.[0] || '0'),
       status: fields.status?.[0] || 'Aktivan',
       dateFrom: new Date(fields.dateFrom?.[0] || Date.now()),
       dateTo: fields.dateTo?.[0] ? new Date(fields.dateTo[0]) : null,
@@ -34,9 +34,14 @@ export const createBuyOfferService = async (req: AuthRequest) => {
     },
   })
 
+  const variant = await prisma.productVariant.findUnique({
+    where: { id: parseInt(fields.variantId?.[0] || '0') },
+    include: { product: true },
+  })
+
   const notification = await prisma.notification.create({
     data: {
-      title: `Nova ponuda za kupovinu - ${fields.product?.[0]}`,
+      title: `Nova ponuda za kupovinu - ${variant?.product.name} ${variant?.name}`,
       description: fields.quantity?.[0]
         ? `Potrebno ${fields.quantity[0]} kg`
         : 'Količina nije navedena',
@@ -51,7 +56,7 @@ export const createBuyOfferService = async (req: AuthRequest) => {
     `
     <p>Kreirana je nova kupovna ponuda:</p>
     <ul>
-      <li>Proizvod: ${fields.product?.[0]}</li>
+      <li>Proizvod: ${variant?.product.name} ${variant?.name}</li>
       <li>Količina: ${fields.quantity?.[0]} kg</li>
       <li>Lokacija: ${fields.city?.[0]}</li>
       <li>Način plaćanja: ${fields.paymentDetails?.[0]}</li>
@@ -67,6 +72,11 @@ export const getAllBuyOffersService = async () => {
     return await prisma.buyOffer.findMany({
       include: {
         company: true,
+        variant: {
+          include: {
+            product: true,
+          },
+        },
       },
       orderBy: {
         id: 'desc',

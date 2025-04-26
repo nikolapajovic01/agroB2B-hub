@@ -15,9 +15,17 @@ import {getAuthToken} from "../../utils/authUtils";
 import Malina from '../../assets/images/raspberry.svg';
 import Borovnica from '../../assets/images/blueberries.svg';
 import Kupina from '../../assets/images/blackberry.svg';
-import Visnja from '../../assets/images/visnja.png';
+import Višnja from '../../assets/images/visnja.png';
 import Jagoda from '../../assets/images/strawberry.png';
 import Krompir from '../../assets/images/potato.svg';
+import Jabuka from '../../assets/images/apple.avif';
+import Aronija from '../../assets/images/aronia.png';
+import Grožđe from '../../assets/images/grozdje1.png';
+import Luk from '../../assets/images/onion.png';
+import Breskva from '../../assets/images/peach.avif';
+import Kajsija from '../../assets/images/peach.avif';
+import Kruška from '../../assets/images/pear.png';
+import Šljiva from '../../assets/images/sljiva.png';
 
 // Product icon mapping
 const productIcons: { [key: string]: string } = {
@@ -25,15 +33,30 @@ const productIcons: { [key: string]: string } = {
   'Malina 90/10': Malina,
   'Borovnica': Borovnica,
   'Kupina': Kupina,
-  'Višnja': Visnja,
+  'Višnja': Višnja,
   'Jagoda': Jagoda,
   'Krompir crveni': Krompir,
   'Krompir beli': Krompir,
+  'Jabuka': Jabuka,
+  'Aronija': Aronija,
+  'Grožđe': Grožđe,
+  'Luk': Luk,
+  'Breskva': Breskva,
+  'Kajsija': Kajsija,
+  'Kruška': Kruška,
+  'Šljiva': Šljiva
 };
 
 interface BuyOffer {
   id: number;
-  product: string;
+  variant: {
+    name: string;
+    product: {
+      name: string;
+    };
+  };
+  companyName: string,
+  companyLogo: string,
   dateFrom: string;
   dateTo: string;
   quantity: number | string;
@@ -53,14 +76,14 @@ interface BuyOffer {
 const column = [
   {
     Header: 'Proizvod',
-    accessor: 'product',
+    accessor: (row: BuyOffer) => `${row.variant.product.name} - ${row.variant.name}`,
     minWidth: 100,
     className: 'whitespace-nowrap',
     Cell: ({ value }: { value: string }) => (
       <div className="flex items-center gap-3">
         <div className="h-8 w-8">
           <img 
-            src={productIcons[value] || Malina} 
+            src={productIcons[value.split(' - ')[0]] || Malina} 
             alt={value} 
             className="h-full w-full object-contain"
           />
@@ -69,6 +92,24 @@ const column = [
       </div>
     ),
   },
+  {
+    Header: 'Kompanija',
+    accessor: 'company.name', // <<< accessor vodi kroz objekat
+    minWidth: 150,
+    className: 'whitespace-nowrap',
+    Cell: ({ row }: { row: any }) => (
+      <div className="flex items-center gap-2">
+        <div className="h-8 w-8 rounded-full overflow-hidden bg-gray-200">
+          <img
+            src={row.original.company?.photoUrl || '/default-logo.png'}
+            alt={row.original.company?.name || 'Logo'}
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <span className="truncate max-w-[120px]">{row.original.company?.name || 'Nepoznata kompanija'}</span>
+      </div>
+    ),
+  },  
   {
     Header: 'Važi od',
     accessor: 'dateFrom',

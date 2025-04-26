@@ -26,3 +26,21 @@ export const fetchCompanyDetails = async (companyId: number) => {
     },
   })
 }
+
+export const getAllCompanies = async () => {
+  return await prisma.company.findMany({
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      capacity: true,
+      bonitet: true,
+      certificates: true,
+      photoUrl: true,
+      isVerified: true,
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  })
+}

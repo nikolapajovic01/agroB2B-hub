@@ -3,6 +3,7 @@ import { AuthRequest } from '../middleware/auth'
 import {
   fetchCompanyVerificationStatus,
   fetchCompanyDetails,
+  getAllCompanies as fetchAllCompanies,
 } from '../services/company.service'
 
 export const getCompanyVerificationStatus = async (req: Request, res: Response) => {
@@ -36,6 +37,16 @@ export const getCompanyDetailsForLoggedInUser = async (req: AuthRequest, res: Re
     res.json(company)
   } catch (error) {
     console.error('❌ Error fetching company details:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const getAllCompanies = async (req: Request, res: Response) => {
+  try {
+    const companies = await fetchAllCompanies()
+    res.json(companies)
+  } catch (error) {
+    console.error('Error fetching companies:', error)
     res.status(500).json({ error: 'Internal server error' })
   }
 }

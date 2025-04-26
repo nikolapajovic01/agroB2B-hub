@@ -26,7 +26,11 @@ model User {
   emailVerificationTokens EmailVerificationToken[]
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
+  sellOffers              SellOffer[]              @relation("UserSellOffers")
+
+  notifications           Notification[]           @relation("UserNotifications") // ⬅️ dodaj ovo
 }
+
 
 
 model Company {
@@ -72,12 +76,15 @@ model SellOffer {
   photos               String[]
   description          String?          @db.Text
   administrativeStatus String
-  company              Company          @relation(fields: [companyId], references: [id])
-  companyId            Int
+  company              Company?         @relation(fields: [companyId], references: [id])
+  companyId            Int?              // <--- učini companyId opcionalnim
+  individualUser       User?             @relation("UserSellOffers", fields: [userId], references: [id])
+  userId               Int?              // <--- dodaj polje za fizičko lice
   bids                 SellOfferBid[]
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
 }
+
 
 
 model SellOfferBid {
@@ -94,7 +101,8 @@ model SellOfferBid {
 
 model BuyOffer {
   id                   Int           @id @default(autoincrement())
-  product              String
+  variant              ProductVariant   @relation(fields: [variantId], references: [id])
+  variantId            Int
   status               String
   dateFrom             DateTime
   dateTo               DateTime?
@@ -126,14 +134,21 @@ model Notification {
   id          Int      @id @default(autoincrement())
   title       String
   description String   @db.Text
-  type        String   // "product_offer", "interest_response", etc.
+  type        String
   link        String?
   isRead      Boolean  @default(false)
-  company     Company  @relation(fields: [companyId], references: [id])
-  companyId   Int
+
+  company     Company? @relation(fields: [companyId], references: [id])
+  companyId   Int?
+
+  user        User?    @relation("UserNotifications", fields: [userId], references: [id])
+  userId      Int?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+
 
 model ProductInterest {
   id        Int      @id @default(autoincrement())
@@ -161,6 +176,7 @@ model ProductVariant {
   product   Product  @relation(fields: [productId], references: [id])
   productId Int
   sellOffers SellOffer[]     // povezane ponude
+  buyOffers  BuyOffer[]      // povezane kupovne ponude
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

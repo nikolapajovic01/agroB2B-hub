@@ -38,6 +38,16 @@ export const createSellOfferService = async (req: AuthRequest) => {
     throw new Error('Invalid variant selected')
   }
 
+  // -----------------------
+  // Ovde proveravamo tip korisnika
+  // -----------------------
+
+  const isCompanyUser = !!req.user.companyId
+
+  if (!isCompanyUser && req.user.userType !== 'individual') {
+    throw new Error('Invalid user type')
+  }
+
   const sellOffer = await prisma.sellOffer.create({
     data: {
       variantId,
@@ -49,49 +59,74 @@ export const createSellOfferService = async (req: AuthRequest) => {
       price: parseFloat(fields.price?.[0] || '0'),
       quantity: parseFloat(fields.quantity?.[0] || '0'),
       photos: photoUrls,
-      companyId: req.user.companyId,
+      companyId: isCompanyUser ? req.user.companyId : null,
+      userId: isCompanyUser ? null : req.user.userId,  // Ako nije kompanija, vezujemo userId
       administrativeStatus: 'PENDING',
     },
   })
 
-  const company = await prisma.company.findUnique({
-    where: { id: req.user.companyId },
-  })
+  // -----------------------
+  // Notifikacije zavisno od tipa korisnika
+  // -----------------------
 
-  await notifyInterestedCompanies(variant.product.name, {
-    quantity: parseFloat(fields.quantity?.[0] || '0'),
-    price: fields.price?.[0] || '0',
-    city: fields.city?.[0] || '',
-    companyName: company?.name || 'Unknown Company',
-    companyId: req.user.companyId,
-  })
+  if (isCompanyUser) {
+    const company = await prisma.company.findUnique({
+      where: { id: req.user.companyId },
+    })
 
-  await prisma.notification.create({
-    data: {
-      title: `Nova ponuda za prodaju - ${variant.product.name} ${variant.name}`,
-      description: `Ponuđeno ${fields.quantity?.[0]} kg po ceni od ${fields.price?.[0]} €/kg`,
-      type: 'product_offer',
-      link: `/sell-offers/${sellOffer.id}`,
-      companyId: req.user.companyId,
-    },
-  })
+    if (company) {
+      await notifyInterestedCompanies(variant.product.name, {
+        quantity: parseFloat(fields.quantity?.[0] || '0'),
+        price: fields.price?.[0] || '0',
+        city: fields.city?.[0] || '',
+        companyName: company.name,
+        companyId: company.id,
+      })
 
-  await emailService.sendAdminNotification(
-    'Nova Prodajna Ponuda',
-    `
-      <p>Kreirana je nova prodajna ponuda:</p>
-      <ul>
-        <li>Proizvod: ${variant.product.name} ${variant.name}</li>
-        <li>Količina: ${fields.quantity?.[0]} kg</li>
-        <li>Cena: ${fields.price?.[0]} €/kg</li>
-        <li>Lokacija: ${fields.city?.[0]}</li>
-        <li>Kompanija ID: ${req.user.companyId}</li>
-      </ul>
-    `
-  )
+      await prisma.notification.create({
+        data: {
+          title: `Nova ponuda za prodaju - ${variant.product.name} ${variant.name}`,
+          description: `Ponuđeno ${fields.quantity?.[0]} kg po ceni od ${fields.price?.[0]} €/kg`,
+          type: 'product_offer',
+          link: `/sell-offers/${sellOffer.id}`,
+          companyId: company.id,
+        },
+      })
+
+      await emailService.sendAdminNotification(
+        'Nova Prodajna Ponuda',
+        `
+          <p>Kreirana je nova prodajna ponuda:</p>
+          <ul>
+            <li>Proizvod: ${variant.product.name} ${variant.name}</li>
+            <li>Količina: ${fields.quantity?.[0]} kg</li>
+            <li>Cena: ${fields.price?.[0]} €/kg</li>
+            <li>Lokacija: ${fields.city?.[0]}</li>
+            <li>Kompanija: ${company.name}</li>
+          </ul>
+        `
+      )
+    }
+  } else {
+    // fizičko lice: možemo samo da kreiramo osnovnu notifikaciju ako želiš
+    await emailService.sendAdminNotification(
+      'Nova Prodajna Ponuda (Fizičko lice)',
+      `
+        <p>Kreirana je nova prodajna ponuda od fizičkog lica:</p>
+        <ul>
+          <li>Proizvod: ${variant.product.name} ${variant.name}</li>
+          <li>Količina: ${fields.quantity?.[0]} kg</li>
+          <li>Cena: ${fields.price?.[0]} €/kg</li>
+          <li>Lokacija: ${fields.city?.[0]}</li>
+          <li>User ID: ${req.user.userId}</li>
+        </ul>
+      `
+    )
+  }
 
   return sellOffer
 }
+
 
 export const getAllSellOffersService = async () => {
     return await prisma.sellOffer.findMany({

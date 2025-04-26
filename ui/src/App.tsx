@@ -22,6 +22,7 @@ import CompanyNotVerified from './pages/Authentication/CompanyNotVerified';
 import CurrentPrices from "./pages/Dashboard/CurrentPrices";
 import LandingPage from "./pages/LandingPage";
 import ProductVariants from './pages/Prices/ProductVariants';
+import CompaniesList from './pages/Companies/CompaniesList';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -630,6 +631,8 @@ function App() {
             />
           }
         />
+        <Route path="/companies"
+        element={<CompaniesList />} />
 
       </Routes>
     </>

@@ -302,9 +302,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     <>
       <li>
         <NavLink
-          to="/company-offers"
+          to="/buy-offers"
           className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-            pathname.includes('company-offers') &&
+            pathname.includes('buy-offers') &&
             'bg-graydark dark:bg-meta-4'
           }`}
         >
@@ -326,7 +326,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       </li>
       <li>
         <NavLink
-          to="/publish-product"
+          to="/sell-offers/new"
           className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
             pathname.includes('publish-product') &&
             'bg-graydark dark:bg-meta-4'
@@ -418,7 +418,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-        <NavLink to="/">
+        <NavLink to={userType === 'company' ? '/dashboard' : '/buy-offers'}>
           <div className="flex items-center">
             <div className="rounded-lg bg-primary p-2">
               <svg

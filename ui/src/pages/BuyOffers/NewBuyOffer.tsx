@@ -1,15 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
 import {getAuthToken} from "../../utils/authUtils";
 
-const products = [
-    { value: 'Malina', label: 'Malina' },
-    { value: 'Kupina', label: 'Kupina' },
-    { value: 'Borovnica', label: 'Borovnica' },
-    { value: 'Jagoda', label: 'Jagoda' },
-];
+interface Product {
+  id: number;
+  name: string;
+  image: string;
+  variants: Variant[];
+}
+
+interface Variant {
+  id: number;
+  name: string;
+}
 
 const paymentOptions = [
     { value: 'Po dogovoru', label: 'Po dogovoru'},
@@ -28,8 +33,10 @@ const NewBuyOffer = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [formData, setFormData] = useState({
-        product: '',
+        variantId: '',
         dateFrom: new Date().toISOString().split('T')[0],
         dateTo: '',
         quantity: '',
@@ -40,17 +47,49 @@ const NewBuyOffer = () => {
         administrativeStatus: 'PENDING'
     });
 
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const token = getAuthToken();
+                if (!token) {
+                    throw new Error('No authentication token found');
+                }
+
+                const response = await fetch(`${API_URL}/api/products`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch products');
+                }
+
+                const data = await response.json();
+                setProducts(data);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'An error occurred');
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    const handleProductSelect = (productId: string) => {
+        const product = products.find(p => p.id.toString() === productId);
+        setSelectedProduct(product || null);
+        setFormData(prev => ({ ...prev, variantId: '' }));
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
 
         // Validate all required fields
         const requiredFields = {
-            product: 'Proizvod',
+            variantId: 'Varijanta',
             dateFrom: 'Datum od',
-            // dateTo: 'Datum do',
             city: 'Grad',
-            // description: 'Opis',
             paymentDetails: 'Način plaćanja'
         };
 
@@ -81,7 +120,6 @@ const NewBuyOffer = () => {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    // Remove Content-Type header to let the browser set it with the boundary
                 },
                 body: formDataToSend,
             });
@@ -116,20 +154,42 @@ const NewBuyOffer = () => {
                             Proizvod
                         </label>
                         <select
-                            value={formData.product}
-                            onChange={(e) => setFormData(prev => ({ ...prev, product: e.target.value }))}
+                            value={selectedProduct?.id || ''}
+                            onChange={(e) => handleProductSelect(e.target.value)}
                             className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             required
                             title="Molimo izaberite proizvod"
                         >
                             <option value="">Izaberite proizvod</option>
                             {products.map((product) => (
-                                <option key={product.value} value={product.value}>
-                                    {product.label}
+                                <option key={product.id} value={product.id}>
+                                    {product.name}
                                 </option>
                             ))}
                         </select>
                     </div>
+
+                    {selectedProduct && (
+                        <div>
+                            <label className="mb-3 block text-black dark:text-white">
+                                Varijanta
+                            </label>
+                            <select
+                                value={formData.variantId}
+                                onChange={(e) => setFormData(prev => ({ ...prev, variantId: e.target.value }))}
+                                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                required
+                                title="Molimo izaberite varijantu"
+                            >
+                                <option value="">Izaberite varijantu</option>
+                                {selectedProduct.variants.map((variant) => (
+                                    <option key={variant.id} value={variant.id}>
+                                        {variant.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
 
                     {/* Date Inputs */}
                     <div className="grid grid-cols-2 gap-4">
