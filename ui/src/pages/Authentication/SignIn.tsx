@@ -38,11 +38,15 @@ const SignIn: React.FC = () => {
       const { token, user } = await loginResponse.json();
       console.log('Login successful, user:', user);
   
-      // ✅ Snimi authToken i userType
-      localStorage.setItem('authToken', token);
-      localStorage.removeItem('token'); // obriši stari token ako postoji
-      localStorage.setItem('userType', user.userType); // "company" ili "individual"
+      // // ✅ Snimi authToken i userType
+      // localStorage.setItem('authToken', token);
+      // localStorage.removeItem('token'); // obriši stari token ako postoji
+      // localStorage.setItem('userType', user.userType); // "company" ili "individual"
   
+      localStorage.setItem('authToken', token);
+      localStorage.removeItem('token');
+      localStorage.setItem('user', JSON.stringify(user)); // <<< snimi kompletan user objekat
+
       // ✅ Redirekcija na osnovu userType
       if (user.userType === 'individual') {
         navigate('/buy-offers');

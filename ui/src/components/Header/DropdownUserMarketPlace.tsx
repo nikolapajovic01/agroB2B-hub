@@ -24,8 +24,10 @@ const DropdownUserMarketPlace = () => {
   const [companyDetails, setCompanyDetails] = useState<CompanyDetails | null>(null);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [, setError] = useState<string | null>(null);
-  const userType = localStorage.getItem('userType');
-
+  const userString = localStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
+  const userType = user?.userType || null;
+  
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
 

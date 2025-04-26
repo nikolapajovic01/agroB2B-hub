@@ -32,3 +32,9 @@ export const isAuthenticated = (): boolean => {
     localStorage.removeItem('authToken');
     window.location.href = '/auth/signin';
   };
+
+  export const getUserDetails = () => {
+    const userString = localStorage.getItem('user');
+    return userString ? JSON.parse(userString) : null;
+  };
+  

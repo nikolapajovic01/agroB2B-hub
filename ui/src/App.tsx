@@ -519,33 +519,42 @@ function App() {
             </>
           }
         />
-          <Route
-            path="/dashboard/current"
-            element={
-                <ProtectedRoute
-                    element={CurrentPrices}
-                    title="Trenutni pregled"
-                />
-            }
-          />
+        <Route
+          path="/dashboard/current"
+          element={
+            <ProtectedRoute
+              element={CurrentPrices}
+              title="Trenutni pregled"
+              allowedUserTypes={['company']}
+            />
+          }
+        />
+
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute
               element={ExportStatisticDashboard}
               title="Statistika Izvoza"
+              allowedUserTypes={['company']}
             />
           }
         />
+
         <Route
           path="/dashboard/transactions"
           element={
-            <ProtectedRoute element={Transactions} title="Lista transakcija" />
+            <ProtectedRoute
+              element={Transactions}
+              title="Lista transakcija"
+              allowedUserTypes={['company']}
+            />
           }
         />
+
         <Route
           path="/sell-offers"
-          element={<ProtectedRoute element={SellOffers} title="Prodaja" />}
+          element={<ProtectedRoute element={SellOffers} title="Prodaja" allowedUserTypes={['company']} />}
         />
         <Route
           path="/buy-offers"
@@ -554,7 +563,11 @@ function App() {
         <Route
           path="/profile"
           element={
-            <ProtectedRoute element={ProfileCompany} title="Moj Profil" />
+            <ProtectedRoute 
+            element={ProfileCompany} 
+            title="Moj Profil"
+            allowedUserTypes={['company']} 
+            />
           }
         />
         <Route
@@ -619,6 +632,7 @@ function App() {
             <ProtectedRoute
               element={NewBuyOffer}
               title="Kreiraj Novu Kupovnu Ponudu"
+              allowedUserTypes={['company']}
             />
           }
         />

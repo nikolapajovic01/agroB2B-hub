@@ -19,7 +19,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
   );
 
-  const userType = localStorage.getItem('userType');
+  const userString = localStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
+  const userType = user?.userType || null;
+
 
   // close on click outside
   useEffect(() => {

@@ -9,7 +9,7 @@ import {
 } from 'react-table';
 import ColumnFilter from './ColumnFilter';
 import { useNavigate } from 'react-router-dom';
-import {getAuthToken} from "../../utils/authUtils";
+import {getAuthToken, getUserDetails} from "../../utils/authUtils";
 
 // Import product images
 import Malina from '../../assets/images/raspberry.svg';
@@ -179,6 +179,8 @@ const DataTableOne = () => {
   const [data, setData] = useState<BuyOffer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const user = getUserDetails();
+  const userType = user?.userType || null;
 
   useEffect(() => {
     const fetchBuyOffers = async () => {
@@ -284,6 +286,7 @@ const DataTableOne = () => {
         </div>
 
         <div className="flex items-center gap-4">
+        {userType === 'company' && (
           <button
             className="bg-primary text-white px-2 py-1 md:px-4 md:py-2 rounded-md text-sm md:text-base"
             onClick={() => navigate('/buy-offers/new')}
@@ -291,6 +294,7 @@ const DataTableOne = () => {
             <span className="hidden md:inline">Kreiraj novi zahtev za kupovinu</span>
             <span className="md:hidden">Novi zahtev</span>
           </button>
+        )}
           <div className="flex items-center font-medium">
             <select
               value={pageSize}
