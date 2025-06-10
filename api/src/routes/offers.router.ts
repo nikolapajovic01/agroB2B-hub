@@ -12,6 +12,8 @@ import {
   getBuyOfferById,
   createBuyBid,
 } from '../controllers/buyOffer.controller'
+import { getSellOffersByVariantId } from '../controllers/sellOffer.controller'
+
 
 const router = Router()
 
@@ -26,5 +28,8 @@ router.post('/buy-offers', authMiddleware, createBuyOffer)
 router.get('/buy-offers', authMiddleware, getAllBuyOffers)
 router.get('/buy-offers/:id', authMiddleware, getBuyOfferById)
 router.post('/buy-offers/:id/bids', authMiddleware, createBuyBid)
+
+router.get('/sell-offers/variant/:variantId', getSellOffersByVariantId)
+
 
 export default router

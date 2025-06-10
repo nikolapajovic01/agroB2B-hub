@@ -15,6 +15,7 @@ import NewSellOffer from './pages/SellOffers/NewSellOffer';
 import BuyOfferDetails from './pages/BuyOfferDetails';
 import NewBuyOffer from './pages/BuyOffers/NewBuyOffer';
 import ExportStatisticDashboard from './pages/Dashboard/ExportStatisticDashboard';
+import ExportStatisticDashboard2025 from './pages/Dashboard/ExportStatisticDashboard';
 import Transactions from './pages/Dashboard/Transactions';
 import ProfileCompany from './pages/Profile/ProfileCompany';
 import ProfileUser from './pages/Profile/ProfileUser';
@@ -535,18 +536,40 @@ function App() {
           element={
             <ProtectedRoute
               element={ExportStatisticDashboard}
-              title="Statistika Izvoza"
+              title="Statistika Izvoza 2024"
               allowedUserTypes={['company']}
             />
           }
         />
 
         <Route
-          path="/dashboard/transactions"
+          path="/dashboard/2025"
+          element={
+            <ProtectedRoute
+              element={ExportStatisticDashboard2025}
+              title="Statistika Izvoza 2025"
+              allowedUserTypes={['company']}
+            />
+          }
+        />
+
+        <Route
+          path="/dashboard/transactions2024"
           element={
             <ProtectedRoute
               element={Transactions}
               title="Lista transakcija"
+              allowedUserTypes={['company']}
+            />
+          }
+        />
+
+        <Route
+          path="/dashboard/transactions2025"
+          element={
+            <ProtectedRoute
+              element={Transactions}
+              title="Lista transakcija 2025"
               allowedUserTypes={['company']}
             />
           }

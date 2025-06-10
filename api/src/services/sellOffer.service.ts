@@ -185,5 +185,33 @@ export const createSellBidService = async (
   
     return bid
   }
+
+  export const getSellOffersByVariantIdService = async (variantId: number) => {
+    return prisma.sellOffer.findMany({
+      where: {
+        variantId: variantId,
+      },
+      include: {
+        variant: {
+          select: {
+            name: true,
+            product: {
+              select: {
+                name: true
+              }
+            }
+          }
+        },
+        company: {
+          select: {
+            name: true,
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+  }
   
   

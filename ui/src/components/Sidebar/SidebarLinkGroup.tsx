@@ -1,21 +1,22 @@
-import { ReactNode, useState } from 'react';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 interface SidebarLinkGroupProps {
-  children: (handleClick: () => void, open: boolean) => ReactNode;
+  children: (handleClick: () => void, open: boolean) => React.ReactNode;
   activeCondition: boolean;
 }
 
-const SidebarLinkGroup = ({
+const SidebarLinkGroup: React.FC<SidebarLinkGroupProps> = ({
   children,
   activeCondition,
-}: SidebarLinkGroupProps) => {
-  const [open, setOpen] = useState<boolean>(activeCondition);
+}) => {
+  const [open, setOpen] = React.useState<boolean>(activeCondition);
 
   const handleClick = () => {
     setOpen(!open);
   };
 
-  return <li>{children(handleClick, open)}</li>;
+  return <div>{children(handleClick, open)}</div>;
 };
 
 export default SidebarLinkGroup;

@@ -1,10 +1,17 @@
 import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
 const prisma = new PrismaClient();
+
 
 async function main() {
 
+  await prisma.buyOffer.deleteMany();
+  await prisma.sellOffer.deleteMany();
   await prisma.productVariant.deleteMany();
   await prisma.product.deleteMany();
+  
+  
 
   await prisma.product.create({
     data: {
@@ -175,7 +182,187 @@ async function main() {
   });
 
   console.log('Seed uspešno ubačen!');
+
+  await insertExports2024(); // Učitavanje podataka za 2024
+  await insertExports2025(); // Učitavanje podataka za 2025
 }
+
+async function insertExports2024() {
+  const filePath = path.join(__dirname, 'transakcije_2024.json');
+  const rawData = fs.readFileSync(filePath, 'utf-8');
+  const transactions = JSON.parse(rawData);
+
+  type ExportData = {
+    date: Date;
+    product: string;
+    countryCode: string;
+    countryName: string;
+    quantityKg: number;
+    valueEur: number;
+    unitPriceEur: number;
+    month: number;
+    year: number;
+    type: string;
+  };
+
+  const cleaned: ExportData[] = [];
+  const skipped: any[] = [];
+
+  transactions.forEach((item: any) => {
+    const parsedDate = new Date(item.date);
+    const isValidDate = !isNaN(parsedDate.getTime());
+
+    if (
+      !isValidDate ||
+      !item.product ||
+      !item.country ||
+      !item.countryCode ||
+      typeof item.quantity !== 'number' ||
+      typeof item.cost !== 'number' ||
+      typeof item.price !== 'number'
+    ) {
+      skipped.push(item);
+      return;
+    }
+
+    cleaned.push({
+      date: parsedDate,
+      product: item.product,
+      countryCode: item.countryCode,
+      countryName: item.country,
+      quantityKg: item.quantity,
+      valueEur: item.cost,
+      unitPriceEur: item.price,
+      month: parsedDate.getMonth() + 1,
+      year: parsedDate.getFullYear(),
+      type: item.type?.toLowerCase() || 'ostalo'
+    });
+  });
+
+  // Uklanjanje duplikata po ključnim poljima
+  const uniqueMap = new Map<string, ExportData>();
+  cleaned.forEach((entry) => {
+    const key = `${entry.date.toISOString()}|${entry.product}|${entry.countryCode}|${entry.quantityKg}|${entry.valueEur}`;
+    if (!uniqueMap.has(key)) {
+      uniqueMap.set(key, entry);
+    }
+  });
+  const uniqueCleaned = Array.from(uniqueMap.values());
+
+  await prisma.export.createMany({
+    data: uniqueCleaned,
+    skipDuplicates: true
+  });
+
+  console.log(`✅ Ubačeno ${uniqueCleaned.length} unikatnih export zapisa za 2024.`);
+  if (skipped.length > 0) {
+    console.warn(`⚠️ Preskočeno ${skipped.length} zapisa zbog neispravnih podataka.`);
+  
+    const skippedPath = path.join(__dirname, 'skipped_exports.json');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupPath = skippedPath.replace('.json', `-backup-${timestamp}.json`);
+  
+    if (fs.existsSync(skippedPath)) {
+      fs.copyFileSync(skippedPath, backupPath);
+      console.log(`🗂️ Backup prethodnog skipped_exports.json kao ${backupPath}`);
+    }
+  
+    fs.writeFileSync(skippedPath, JSON.stringify(skipped, null, 2));
+  }
+}
+
+async function insertExports2025() {
+  try {
+    const filePath = path.join(__dirname, 'transakcijeRolend_2025.json');
+    const rawData = fs.readFileSync(filePath, 'utf-8');
+    const transactions = JSON.parse(rawData);
+
+    type ExportData = {
+      date: Date;
+      product: string;
+      countryCode: string;
+      countryName: string;
+      quantityKg: number;
+      valueEur: number;
+      unitPriceEur: number;
+      month: number;
+      year: number;
+      type: string;
+    };
+
+    const cleaned: ExportData[] = [];
+    const skipped: any[] = [];
+
+    transactions.forEach((item: any) => {
+      const parsedDate = new Date(item.date);
+      const isValidDate = !isNaN(parsedDate.getTime());
+
+      if (
+        !isValidDate ||
+        !item.product ||
+        !item.country ||
+        !item.countryCode ||
+        typeof item.quantity !== 'number' ||
+        typeof item.cost !== 'number' ||
+        typeof item.price !== 'number'
+      ) {
+        skipped.push(item);
+        return;
+      }
+
+      cleaned.push({
+        date: parsedDate,
+        product: item.product,
+        countryCode: item.countryCode,
+        countryName: item.country,
+        quantityKg: item.quantity,
+        valueEur: item.cost,
+        unitPriceEur: item.price,
+        month: parsedDate.getMonth() + 1,
+        year: 2025,
+        type: item.type?.toLowerCase() || 'rolend'
+      });
+    });
+
+    // Uklanjanje duplikata po ključnim poljima
+    const uniqueMap = new Map<string, ExportData>();
+    cleaned.forEach((entry) => {
+      const key = `${entry.date.toISOString()}|${entry.product}|${entry.countryCode}|${entry.quantityKg}|${entry.valueEur}`;
+      if (!uniqueMap.has(key)) {
+        uniqueMap.set(key, entry);
+      }
+    });
+    const uniqueCleaned = Array.from(uniqueMap.values());
+
+    await prisma.export.createMany({
+      data: uniqueCleaned,
+      skipDuplicates: true
+    });
+
+    console.log(`✅ Ubačeno ${uniqueCleaned.length} unikatnih export zapisa za 2025.`);
+    if (skipped.length > 0) {
+      console.warn(`⚠️ Preskočeno ${skipped.length} zapisa zbog neispravnih podataka.`);
+    
+      const skippedPath = path.join(__dirname, 'skipped_exports_2025.json');
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const backupPath = skippedPath.replace('.json', `-backup-${timestamp}.json`);
+    
+      if (fs.existsSync(skippedPath)) {
+        fs.copyFileSync(skippedPath, backupPath);
+        console.log(`🗂️ Backup prethodnog skipped_exports_2025.json kao ${backupPath}`);
+      }
+    
+      fs.writeFileSync(skippedPath, JSON.stringify(skipped, null, 2));
+    }
+  } catch (error) {
+    console.error('Error importing 2025 data:', error);
+  }
+}
+
+
+
+
+
 
 main()
 

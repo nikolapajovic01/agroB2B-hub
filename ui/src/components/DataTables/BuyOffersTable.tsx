@@ -214,23 +214,17 @@ const DataTableOne = () => {
 
   // const columns = useMemo(() => column, []);
   const tableData = useMemo(() => data, [data]);
-  const defaultColumn = useMemo(() => {
-    return {
-      Filter: ColumnFilter,
-    };
-  }, []);
 
   const tableInstance = useTable<BuyOffer>(
     {
       columns: column as any,
       data: tableData,
-      defaultColumn,
     },
-    useFilters,
     useGlobalFilter,
     useSortBy,
     usePagination
   );
+  
 
   const navigate = useNavigate();
   const {
@@ -363,8 +357,6 @@ const DataTableOne = () => {
                         </span>
                       </div>
                     </div>
-
-                    {column.canFilter ? column.render('Filter') : null}
                   </th>
                 ))}
               </tr>

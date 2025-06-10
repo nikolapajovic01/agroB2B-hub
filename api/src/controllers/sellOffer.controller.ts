@@ -4,7 +4,7 @@ import { createSellOfferService } from '../services/sellOffer.service'
 import { getAllSellOffersService } from '../services/sellOffer.service'
 import { getSellOfferByIdService } from '../services/sellOffer.service'
 import { createSellBidService } from '../services/sellOffer.service'
-
+import { getSellOffersByVariantIdService } from '../services/sellOffer.service'
 
 
 
@@ -62,6 +62,21 @@ export const createSellBid = async (req: AuthRequest, res: Response) => {
     res.json(bid)
   } catch (error) {
     console.error('Error creating sell bid:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const getSellOffersByVariantId = async (req: Request, res: Response) => {
+  try {
+    const variantId = parseInt(req.params.variantId)
+    if (isNaN(variantId)) {
+      return res.status(400).json({ error: 'Invalid variant ID' })
+    }
+
+    const offers = await getSellOffersByVariantIdService(variantId)
+    res.json(offers)
+  } catch (error) {
+    console.error('Error fetching offers by variant:', error)
     res.status(500).json({ error: 'Internal server error' })
   }
 }
