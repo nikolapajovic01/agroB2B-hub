@@ -79,7 +79,7 @@ const SignIn: React.FC = () => {
         return;
       }
   
-      navigate('/dashboard');
+      navigate('/dashboard/2025');
   
     } catch (error: any) {
       setError(error.message);

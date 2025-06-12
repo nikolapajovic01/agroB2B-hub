@@ -23,7 +23,7 @@ const TransactionList2024: React.FC = () => {
   };
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/exports') // ili http://localhost:3000/api/exports ako nemaš proxy
+    fetch('http://localhost:3000/api/exports/year/2024') // ili http://localhost:3000/api/exports ako nemaš proxy
       .then(res => res.json())
       .then(data => setTransactions(data))
       .catch(err => console.error('Greška pri dohvatanju transakcija:', err));

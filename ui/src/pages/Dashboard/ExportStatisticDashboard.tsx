@@ -8,6 +8,14 @@ import ExportByCountryContent from "../../components/Marketplace/ExportByCountry
 const ExportStatisticDashboard: React.FC = () => {
   return (
     <DefaultLayout>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow mb-2 text-center tracking-wide">
+        Statistika izvoza za 2024. godinu
+      </h2>
+      <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 text-center">
+        <span className="bg-primary/10 px-4 py-1 rounded-full">
+          Period: Januar - Decembar 2024
+        </span>
+      </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Ukupan izvoz" total="78,306 tona" rate="20%" levelUp>
           <svg

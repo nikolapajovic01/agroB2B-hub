@@ -96,6 +96,23 @@ const options: ApexOptions = {
     axisTicks: {
       show: false,
     },
+    labels: {
+      show: true,
+      rotate: 0,
+      rotateAlways: false,
+      hideOverlappingLabels: false,
+      showDuplicates: false,
+      trim: false,
+      minHeight: undefined,
+      maxHeight: 120,
+      style: {
+        colors: [],
+        fontSize: '12px',
+        fontFamily: 'Satoshi, sans-serif',
+        fontWeight: 400,
+        cssClass: 'apexcharts-xaxis-label',
+      },
+    },
   },
   yaxis: {
     title: {
