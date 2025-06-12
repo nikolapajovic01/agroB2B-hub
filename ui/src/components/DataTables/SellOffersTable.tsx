@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getAuthToken } from "../../utils/authUtils";
+import { getAuthToken, getUserDetails } from "../../utils/authUtils";
 import { Column } from 'react-table';
 
 // Import product images
@@ -62,6 +62,8 @@ const DataTableOne = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [variantName, setVariantName] = useState<string | null>(null);
+  const user = getUserDetails();
+  const userType = user?.userType || null;
 
   const [searchParams] = useSearchParams();
   const variantId = searchParams.get('variantId');
@@ -241,25 +243,42 @@ const DataTableOne = () => {
       </div>
 
       {/* Pretraga i page size */}
-      <div className="flex justify-between px-8 pb-4">
-        <input
-          type="text"
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="w-full rounded-md border border-stroke bg-transparent px-5 py-2.5 outline-none focus:border-primary dark:border-strokedark dark:bg-meta-4 dark:focus:border-primary"
-          placeholder="Pretraga..."
-        />
-        <select
-          value={pageSize}
-          onChange={(e) => setPageSize(Number(e.target.value))}
-          className="ml-4 rounded-md border border-stroke bg-transparent dark:border-strokedark"
-        >
-          {[5, 10, 20, 50].map((size) => (
-            <option key={size} value={size}>
-              {size}
-            </option>
-          ))}
-        </select>
+      <div className="flex justify-between  px-8 pb-4">
+        <div className="w-100">
+          <input
+            type="text"
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="w-full rounded-md border border-stroke bg-transparent px-5 py-2.5 outline-none focus:border-primary dark:border-strokedark dark:bg-meta-4 dark:focus:border-primary"
+            placeholder="Search..."
+          />
+        </div>
+
+        <div className="flex items-center gap-4">
+          {userType === 'company' && (
+            <button
+              className="bg-primary text-white px-2 py-1 md:px-4 md:py-2 rounded-md text-sm md:text-base"
+              onClick={() => navigate('/sell-offers/new')}
+            >
+              <span className="hidden md:inline">Kreiraj novu ponudu</span>
+              <span className="md:hidden">Nova ponuda</span>
+            </button>
+          )}
+          <div className="flex items-center font-medium">
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              className="bg-transparent pl-2"
+            >
+              {[5, 10, 20, 50].map((page) => (
+                <option key={page} value={page}>
+                  {page}
+                </option>
+              ))}
+            </select>
+            <p className="pl-2 text-black dark:text-white">Po Stranici</p>
+          </div>
+        </div>
       </div>
 
       {/* Tabela */}
@@ -287,7 +306,11 @@ const DataTableOne = () => {
             {page.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} className="border-t border-stroke dark:border-strokedark hover:bg-gray-100 dark:hover:bg-meta-4 cursor-pointer">
+                <tr 
+                  {...row.getRowProps()} 
+                  className="border-t border-stroke dark:border-strokedark hover:bg-gray-100 dark:hover:bg-meta-4 cursor-pointer"
+                  onClick={() => navigate(`/sell-offers/${row.original.id}`)}
+                >
                   {row.cells.map((cell) => (
                     <td {...cell.getCellProps()} className="px-4 py-2">
                       {cell.render('Cell')}

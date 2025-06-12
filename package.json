@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@types/twilio": "^3.19.2",
+    "recharts": "^2.15.3",
     "twilio": "^5.5.2"
   },
   "devDependencies": {

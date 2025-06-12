@@ -271,8 +271,76 @@ async function insertExports2024() {
   }
 }
 
+async function cleanupDuplicateExports2025() {
+  try {
+    console.log('🧹 Čišćenje dupliranih zapisa za 2025...');
+    
+    // Dohvatamo sve zapise za 2025
+    const exports = await prisma.export.findMany({
+      where: {
+        year: 2025
+      },
+      orderBy: {
+        id: 'asc'
+      }
+    });
+
+    // Kreiramo backup pre čišćenja
+    const backupPath = path.join(__dirname, 'exports_2025_backup.json');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const timestampedBackupPath = backupPath.replace('.json', `-${timestamp}.json`);
+    
+    fs.writeFileSync(timestampedBackupPath, JSON.stringify(exports, null, 2));
+    console.log(`💾 Napravljen backup podataka u ${timestampedBackupPath}`);
+
+    // Kreiramo mapu za praćenje jedinstvenih zapisa
+    const uniqueMap = new Map<string, number>();
+    const duplicates: number[] = [];
+    const uniqueRecords: any[] = [];
+
+    exports.forEach(record => {
+      const key = `${record.date.toISOString()}|${record.product}|${record.countryCode}|${record.quantityKg}|${record.valueEur}`;
+      
+      if (uniqueMap.has(key)) {
+        // Ako zapis već postoji, označavamo ga kao duplikat
+        duplicates.push(record.id);
+      } else {
+        // Ako je novi zapis, dodajemo ga u mapu i niz jedinstvenih zapisa
+        uniqueMap.set(key, record.id);
+        uniqueRecords.push(record);
+      }
+    });
+
+    if (duplicates.length > 0) {
+      // Prvo čuvamo jedinstvene zapise u privremeni fajl
+      const uniqueRecordsPath = path.join(__dirname, 'unique_exports_2025.json');
+      fs.writeFileSync(uniqueRecordsPath, JSON.stringify(uniqueRecords, null, 2));
+      console.log(`📝 Sačuvani jedinstveni zapisi u ${uniqueRecordsPath}`);
+
+      // Brisanje duplikata
+      await prisma.export.deleteMany({
+        where: {
+          id: {
+            in: duplicates
+          }
+        }
+      });
+      console.log(`✅ Uklonjeno ${duplicates.length} dupliranih zapisa za 2025.`);
+      console.log(`ℹ️ Zadržano ${uniqueRecords.length} jedinstvenih zapisa.`);
+    } else {
+      console.log('ℹ️ Nema dupliranih zapisa za 2025.');
+    }
+  } catch (error) {
+    console.error('Error cleaning up duplicate exports:', error);
+    throw error; // Prosleđujemo grešku dalje da bismo zaustavili proces
+  }
+}
+
 async function insertExports2025() {
   try {
+    // Prvo očistimo duplikate
+    await cleanupDuplicateExports2025();
+
     const filePath = path.join(__dirname, 'transakcijeRolend_2025.json');
     const rawData = fs.readFileSync(filePath, 'utf-8');
     const transactions = JSON.parse(rawData);
@@ -293,6 +361,27 @@ async function insertExports2025() {
     const cleaned: ExportData[] = [];
     const skipped: any[] = [];
 
+    // Prvo proverimo postojeće zapise u bazi
+    const existingExports = await prisma.export.findMany({
+      where: {
+        year: 2025
+      },
+      select: {
+        date: true,
+        product: true,
+        countryCode: true,
+        quantityKg: true,
+        valueEur: true
+      }
+    });
+
+    // Kreiramo Set za brže pretraživanje postojećih zapisa
+    const existingSet = new Set(
+      existingExports.map(exp => 
+        `${exp.date.toISOString()}|${exp.product}|${exp.countryCode}|${exp.quantityKg}|${exp.valueEur}`
+      )
+    );
+
     transactions.forEach((item: any) => {
       const parsedDate = new Date(item.date);
       const isValidDate = !isNaN(parsedDate.getTime());
@@ -310,7 +399,7 @@ async function insertExports2025() {
         return;
       }
 
-      cleaned.push({
+      const exportData: ExportData = {
         date: parsedDate,
         product: item.product,
         countryCode: item.countryCode,
@@ -321,25 +410,25 @@ async function insertExports2025() {
         month: parsedDate.getMonth() + 1,
         year: 2025,
         type: item.type?.toLowerCase() || 'rolend'
-      });
-    });
+      };
 
-    // Uklanjanje duplikata po ključnim poljima
-    const uniqueMap = new Map<string, ExportData>();
-    cleaned.forEach((entry) => {
-      const key = `${entry.date.toISOString()}|${entry.product}|${entry.countryCode}|${entry.quantityKg}|${entry.valueEur}`;
-      if (!uniqueMap.has(key)) {
-        uniqueMap.set(key, entry);
+      // Proveravamo da li zapis već postoji
+      const key = `${exportData.date.toISOString()}|${exportData.product}|${exportData.countryCode}|${exportData.quantityKg}|${exportData.valueEur}`;
+      if (!existingSet.has(key)) {
+        cleaned.push(exportData);
       }
     });
-    const uniqueCleaned = Array.from(uniqueMap.values());
 
-    await prisma.export.createMany({
-      data: uniqueCleaned,
-      skipDuplicates: true
-    });
+    if (cleaned.length > 0) {
+      await prisma.export.createMany({
+        data: cleaned,
+        skipDuplicates: true
+      });
+      console.log(`✅ Ubačeno ${cleaned.length} novih export zapisa za 2025.`);
+    } else {
+      console.log('ℹ️ Nema novih zapisa za ubacivanje za 2025.');
+    }
 
-    console.log(`✅ Ubačeno ${uniqueCleaned.length} unikatnih export zapisa za 2025.`);
     if (skipped.length > 0) {
       console.warn(`⚠️ Preskočeno ${skipped.length} zapisa zbog neispravnih podataka.`);
     

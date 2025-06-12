@@ -15,7 +15,7 @@ import NewSellOffer from './pages/SellOffers/NewSellOffer';
 import BuyOfferDetails from './pages/BuyOfferDetails';
 import NewBuyOffer from './pages/BuyOffers/NewBuyOffer';
 import ExportStatisticDashboard from './pages/Dashboard/ExportStatisticDashboard';
-import ExportStatisticDashboard2025 from './pages/Dashboard/ExportStatisticDashboard';
+import ExportStatisticDashboard2025 from './pages/Dashboard/ExportStatisticDashboard2025';
 import Transactions from './pages/Dashboard/Transactions';
 import ProfileCompany from './pages/Profile/ProfileCompany';
 import ProfileUser from './pages/Profile/ProfileUser';

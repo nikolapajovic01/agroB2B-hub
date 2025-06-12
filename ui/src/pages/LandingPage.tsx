@@ -92,7 +92,7 @@ const LandingPage = () => {
             </div>
             <div className="bg-gray-100 dark:bg-boxdark-2 p-4 rounded-lg">
               <img 
-                src="/new_offer.png" 
+                src="/images/new_offer.png" 
                 alt="Kreiranje Prodajnih Ponuda" 
                 className="rounded-lg w-full h-auto shadow-lg"
               />
@@ -104,7 +104,7 @@ const LandingPage = () => {
             <div className="order-2 md:order-1">
               <div className="bg-gray-100 dark:bg-boxdark-2 p-4 rounded-lg">
                 <img 
-                  src="/offer_list.png" 
+                  src="/images/offer_list.png" 
                   alt="Pregled Ponuda" 
                   className="rounded-lg w-full h-auto shadow-lg"
                 />
@@ -148,7 +148,7 @@ const LandingPage = () => {
             </div>
             <div className="bg-gray-100 dark:bg-boxdark-2 p-4 rounded-lg">
               <img 
-                src="/buy_offer.png" 
+                src="/images/buy_offer.png" 
                 alt="Tenderski Sistem Kupovine" 
                 className="rounded-lg w-full h-auto shadow-lg"
               />
@@ -160,7 +160,7 @@ const LandingPage = () => {
             <div className="order-2 md:order-1">
               <div className="bg-gray-100 dark:bg-boxdark-2 p-4 rounded-lg">
                 <img 
-                  src="/tender_list.png" 
+                  src="/images/tender_list.png" 
                   alt="Pregled Tendera" 
                   className="rounded-lg w-full h-auto shadow-lg"
                 />
@@ -211,7 +211,7 @@ const LandingPage = () => {
             </div>
             <div className="bg-gray-100 dark:bg-boxdark-2 p-4 rounded-lg">
               <img 
-                src="/statistic.png" 
+                src="/images/statistic.png" 
                 alt="Statistika Izvoza" 
                 className="rounded-lg w-full h-auto shadow-lg"
               />

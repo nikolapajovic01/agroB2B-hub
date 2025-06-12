@@ -168,7 +168,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </li>
                   <li>
                     <SidebarLinkGroup
-                      activeCondition={pathname.includes('dashboard')}
+                      activeCondition={pathname === '/dashboard' || pathname === '/dashboard/2025'}
                     >
                       {(handleClick, open) => {
                         return (
@@ -176,7 +176,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <NavLink
                               to="#"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname.includes('dashboard') && '!text-white'
+                                (pathname === '/dashboard' || pathname === '/dashboard/2025') && '!text-white'
                               }`}
                               onClick={(e) => {
                                 e.preventDefault();
@@ -234,7 +234,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                     to="/dashboard"
                                     className={({ isActive }) =>
                                       'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                      (isActive && '!text-white')
+                                      (isActive && pathname === '/dashboard' && '!text-white')
                                     }
                                   >
                                     Godina 2024
@@ -242,10 +242,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 </li>
                                 <li>
                                   <NavLink
-                                    to="/dashboard/transactions2025"
+                                    to="/dashboard/2025"
                                     className={({ isActive }) =>
                                       'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                      (isActive && '!text-white')
+                                      (isActive && pathname === '/dashboard/2025' && '!text-white')
                                     }
                                   >
                                     Godina 2025

@@ -55,8 +55,6 @@ interface BuyOffer {
       name: string;
     };
   };
-  companyName: string,
-  companyLogo: string,
   dateFrom: string;
   dateTo: string;
   quantity: number | string;
@@ -92,24 +90,6 @@ const column = [
       </div>
     ),
   },
-  {
-    Header: 'Kompanija',
-    accessor: 'company.name', // <<< accessor vodi kroz objekat
-    minWidth: 150,
-    className: 'whitespace-nowrap',
-    Cell: ({ row }: { row: any }) => (
-      <div className="flex items-center gap-2">
-        <div className="h-8 w-8 rounded-full overflow-hidden bg-gray-200">
-          <img
-            src={row.original.company?.photoUrl || '/default-logo.png'}
-            alt={row.original.company?.name || 'Logo'}
-            className="h-full w-full object-cover"
-          />
-        </div>
-        <span className="truncate max-w-[120px]">{row.original.company?.name || 'Nepoznata kompanija'}</span>
-      </div>
-    ),
-  },  
   {
     Header: 'Važi od',
     accessor: 'dateFrom',
