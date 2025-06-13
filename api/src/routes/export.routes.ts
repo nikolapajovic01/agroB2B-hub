@@ -32,6 +32,89 @@ router.get('/year/:year', async (req, res) => {
   }
 });
 
+// // Get export statistics for 2025
+// router.get('/2025/statistics', async (req, res) => {
+//   try {
+//     const exports = await prisma.export.findMany({
+//       where: {
+//         year: 2025,
+//         type: 'rolend'
+//       },
+//       orderBy: {
+//         month: 'asc'
+//       }
+//     });
+
+//     // Group by month and country
+//     const monthlyStats: Record<string, any> = {};
+//     const allTimeStats: Record<string, { quantityKg: number; valueEur: number; count: number }> = {};
+
+//     exports.forEach(record => {
+//       const month = record.month;
+//       const monthName = getMonthName(month);
+//       const country = record.countryName;
+
+//       // Initialize month if not exists
+//       if (!monthlyStats[monthName]) {
+//         monthlyStats[monthName] = {};
+//       }
+
+//       // Initialize country in month if not exists
+//       if (!monthlyStats[monthName][country]) {
+//         monthlyStats[monthName][country] = {
+//           quantityKg: 0,
+//           valueEur: 0,
+//           count: 0
+//         };
+//       }
+
+//       // Add to monthly stats
+//       monthlyStats[monthName][country].quantityKg += record.quantityKg;
+//       monthlyStats[monthName][country].valueEur += record.valueEur;
+//       monthlyStats[monthName][country].count += 1;
+
+//       // Add to all-time stats
+//       if (!allTimeStats[country]) {
+//         allTimeStats[country] = {
+//           quantityKg: 0,
+//           valueEur: 0,
+//           count: 0
+//         };
+//       }
+//       allTimeStats[country].quantityKg += record.quantityKg;
+//       allTimeStats[country].valueEur += record.valueEur;
+//       allTimeStats[country].count += 1;
+//     });
+
+//     // Format monthly stats
+//     const formattedStats: Record<string, any[]> = {
+//       "Celokupna 2025": Object.entries(allTimeStats)
+//         .map(([country, stats]) => ({
+//           countryName: country,
+//           quantityKg: stats.quantityKg,
+//           unitPriceEur: stats.valueEur / stats.quantityKg
+//         }))
+//         .sort((a, b) => b.quantityKg - a.quantityKg)
+//     };
+
+//     // Add monthly stats
+//     Object.entries(monthlyStats).forEach(([month, countries]) => {
+//       formattedStats[month] = Object.entries(countries)
+//         .map(([country, stats]: [string, any]) => ({
+//           countryName: country,
+//           quantityKg: stats.quantityKg,
+//           unitPriceEur: stats.valueEur / stats.quantityKg
+//         }))
+//         .sort((a, b) => b.quantityKg - a.quantityKg);
+//     });
+
+//     res.json(formattedStats);
+//   } catch (error) {
+//     console.error('Error fetching export statistics:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+
 // Get export statistics for 2025
 router.get('/2025/statistics', async (req, res) => {
   try {
@@ -47,7 +130,7 @@ router.get('/2025/statistics', async (req, res) => {
 
     // Group by month and country
     const monthlyStats: Record<string, any> = {};
-    const allTimeStats: Record<string, { quantityKg: number; valueEur: number; count: number }> = {};
+    const allTimeStats: Record<string, { quantityTons: number; valueEur: number; count: number }> = {};
 
     exports.forEach(record => {
       const month = record.month;
@@ -62,46 +145,50 @@ router.get('/2025/statistics', async (req, res) => {
       // Initialize country in month if not exists
       if (!monthlyStats[monthName][country]) {
         monthlyStats[monthName][country] = {
-          quantityKg: 0,
+          quantityTons: 0,
           valueEur: 0,
           count: 0
         };
       }
 
-      // Add to monthly stats
-      monthlyStats[monthName][country].quantityKg += record.quantityKg;
+      // Add to monthly stats (convert kg to tons)
+      monthlyStats[monthName][country].quantityTons += record.quantityKg / 1000;
       monthlyStats[monthName][country].valueEur += record.valueEur;
       monthlyStats[monthName][country].count += 1;
 
       // Add to all-time stats
       if (!allTimeStats[country]) {
         allTimeStats[country] = {
-          quantityKg: 0,
+          quantityTons: 0,
           valueEur: 0,
           count: 0
         };
       }
-      allTimeStats[country].quantityKg += record.quantityKg;
+      allTimeStats[country].quantityTons += record.quantityKg / 1000;
       allTimeStats[country].valueEur += record.valueEur;
       allTimeStats[country].count += 1;
     });
 
     // Format monthly stats
     const formattedStats: Record<string, any[]> = {
-      "Celokupna 2025": Object.entries(allTimeStats).map(([country, stats]) => ({
-        countryName: country,
-        quantityKg: stats.quantityKg,
-        unitPriceEur: stats.valueEur / stats.quantityKg
-      }))
+      "Celokupna 2025": Object.entries(allTimeStats)
+        .map(([country, stats]) => ({
+          countryName: country,
+          quantityTons: Math.round(stats.quantityTons * 100) / 100,
+          unitPriceEur: Math.round((stats.valueEur / (stats.quantityTons * 1000)) * 100) / 100
+        }))
+        .sort((a, b) => b.quantityTons - a.quantityTons)
     };
 
     // Add monthly stats
     Object.entries(monthlyStats).forEach(([month, countries]) => {
-      formattedStats[month] = Object.entries(countries).map(([country, stats]: [string, any]) => ({
-        countryName: country,
-        quantityKg: stats.quantityKg,
-        unitPriceEur: stats.valueEur / stats.quantityKg
-      }));
+      formattedStats[month] = Object.entries(countries)
+        .map(([country, stats]: [string, any]) => ({
+          countryName: country,
+          quantityTons: Math.round(stats.quantityTons * 100) / 100,
+          unitPriceEur: Math.round((stats.valueEur / (stats.quantityTons * 1000)) * 100) / 100
+        }))
+        .sort((a, b) => b.quantityTons - a.quantityTons);
     });
 
     res.json(formattedStats);

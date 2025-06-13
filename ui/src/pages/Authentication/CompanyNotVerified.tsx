@@ -12,7 +12,7 @@ const CompanyNotVerified = () => {
         const company = await fetchCompanyDetails();
 
         if (company?.isVerified) {
-          navigate('/dashboard');
+          navigate('/dashboard/2025');
         }
       } catch (error) {
         console.error('Greška u proveri verifikacije:', error);

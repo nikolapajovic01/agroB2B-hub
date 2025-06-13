@@ -9,7 +9,7 @@ const ExportStatisticDashboard: React.FC = () => {
   return (
     <DefaultLayout>
             <h2 className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow mb-2 text-center tracking-wide">
-        Statistika izvoza za 2024. godinu
+        Statistika izvoza Maline za 2024. godinu
       </h2>
       <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 text-center">
         <span className="bg-primary/10 px-4 py-1 rounded-full">

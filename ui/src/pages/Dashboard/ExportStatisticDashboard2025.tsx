@@ -9,7 +9,7 @@ const ExportStatisticDashboard2025: React.FC = () => {
   return (
     <DefaultLayout>
       <h2 className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow mb-2 text-center tracking-wide">
-        Statistika izvoza za 2025. godinu
+        Statistika izvoza Maline za 2025. godinu
       </h2>
       <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 text-center">
         <span className="bg-primary/10 px-4 py-1 rounded-full">
@@ -17,7 +17,7 @@ const ExportStatisticDashboard2025: React.FC = () => {
         </span>
       </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Ukupan izvoz" total="27.576 tona" rate="0%" levelUp>
+        <CardDataStats title="Ukupan izvoz" total="27.576 tona" rate="25.7%" levelDown>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -36,7 +36,7 @@ const ExportStatisticDashboard2025: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Ukupna vrednost" total="€110M" rate="0%" levelUp>
+        <CardDataStats title="Ukupna vrednost izvoza" total="€110M" rate="15.7%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -59,7 +59,7 @@ const ExportStatisticDashboard2025: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Prosečna cena Rolend" total="€4,30" rate="0%" levelUp>
+        <CardDataStats title="Prosečna cena Rolend" total="€4,30" rate="56.3%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -78,7 +78,7 @@ const ExportStatisticDashboard2025: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Prosečna cena Griz" total="€3,02" rate="0%" levelUp>
+        <CardDataStats title="Prosečna cena Griz" total="€3,02" rate="59.5%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"

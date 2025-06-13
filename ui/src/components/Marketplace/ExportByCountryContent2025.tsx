@@ -5,7 +5,7 @@ type Period = 'Celokupna 2025' | 'Januar' | 'Februar' | 'Mart' | 'April' | 'Maj'
 
 type ExportRecord = {
   countryName: string;
-  quantityKg: number;
+  quantityTons: number;
   unitPriceEur: number;
 };
 
@@ -73,7 +73,7 @@ const ExportByCountryContent2025: React.FC = () => {
                   Država
                 </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Količina (kg)
+                  Količina (t)
                 </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
                   Prosečna cena (EUR/kg)
@@ -90,7 +90,7 @@ const ExportByCountryContent2025: React.FC = () => {
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
-                      {record.quantityKg.toLocaleString()}
+                      {record.quantityTons.toLocaleString()}
                     </p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
