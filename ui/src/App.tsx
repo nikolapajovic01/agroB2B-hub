@@ -24,6 +24,7 @@ import CurrentPrices from "./pages/Dashboard/CurrentPrices";
 import LandingPage from "./pages/LandingPage";
 import ProductVariants from './pages/Prices/ProductVariants';
 import CompaniesList from './pages/Companies/CompaniesList';
+import NotificationPreferences from './pages/NotificationPreferences';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -670,7 +671,15 @@ function App() {
         />
         <Route path="/companies"
         element={<CompaniesList />} />
-
+        <Route
+          path="/notification-preferences"
+          element={
+            <ProtectedRoute
+              element={NotificationPreferences}
+              title="Market Alerts"
+            />
+          }
+        />
       </Routes>
     </>
   );

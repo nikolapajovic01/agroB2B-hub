@@ -152,8 +152,9 @@ model Notification {
 
 model ProductInterest {
   id        Int      @id @default(autoincrement())
-  product   String
-  type      String   @default("subscription") // subscription or interest
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  type      String   @default("subscription")
   status    String   @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -168,6 +169,7 @@ model Product {
   variants  ProductVariant[]
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
+  ProductInterests ProductInterest[]
 }
 
 model ProductVariant {
