@@ -244,7 +244,7 @@ const SignUp: React.FC = () => {
               <div className="mt-6 text-center">
                 <p>
                   Već imate nalog?{' '}
-                  <Link to="/login" className="text-primary">
+                  <Link to="/auth/signin" className="text-primary">
                     Prijavite se
                   </Link>
                 </p>

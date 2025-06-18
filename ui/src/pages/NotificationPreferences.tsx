@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardBody, CardHeader } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Switch } from '../components/ui/switch';
-import { getAuthToken } from '../utils/authUtils';
+import { getAuthToken, getUserDetails } from '../utils/authUtils';
 import DefaultLayout from '../layout/DefaultLayout';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 
@@ -10,50 +10,71 @@ interface Product {
   id: number;
   name: string;
   image: string;
-  isFollowing: boolean;
+}
+
+interface ProductInterest {
+  id: number;
+  productId: number;
+  companyId: number;
+  type: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  product: {
+    id: number;
+    name: string;
+    image: string;
+  };
 }
 
 const NotificationPreferences: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [productInterests, setProductInterests] = useState<ProductInterest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+  const [companyId, setCompanyId] = useState<number | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
         const token = getAuthToken();
-        const response = await fetch('http://localhost:3000/api/products', {
+        const user = getUserDetails(); // Get user from localStorage
+        
+        if (!user || !user.companyId) {
+          throw new Error('Korisnik mora biti povezan sa kompanijom');
+        }
+
+        setCompanyId(user.companyId);
+
+        // Fetch all products
+        const productsResponse = await fetch('http://localhost:3000/api/products', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
 
-        if (!response.ok) {
+        if (!productsResponse.ok) {
           throw new Error('Greška pri učitavanju proizvoda');
         }
 
-        const data = await response.json();
-        // Fetch user's notification preferences
-        const preferencesResponse = await fetch('http://localhost:3000/api/notifications/preferences', {
+        const productsData = await productsResponse.json();
+
+        // Fetch user's product interests
+        const interestsResponse = await fetch(`http://localhost:3000/api/product-interests/company/${user.companyId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
 
-        if (!preferencesResponse.ok) {
-          throw new Error('Greška pri učitavanju podešavanja obaveštenja');
+        if (!interestsResponse.ok) {
+          throw new Error('Greška pri učitavanju interesovanja');
         }
 
-        const preferences = await preferencesResponse.json();
-        
-        // Combine products with user preferences
-        const productsWithPreferences = data.map((product: Product) => ({
-          ...product,
-          isFollowing: preferences.some((pref: any) => pref.product === product.name)
-        }));
+        const interestsData = await interestsResponse.json();
 
-        setProducts(productsWithPreferences);
+        setProducts(productsData);
+        setProductInterests(interestsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Došlo je do greške');
       } finally {
@@ -61,40 +82,79 @@ const NotificationPreferences: React.FC = () => {
       }
     };
 
-    fetchProducts();
+    fetchData();
   }, []);
 
-  const toggleFollow = async (productId: number) => {
-    const updatedProducts = products.map(product =>
-      product.id === productId ? { ...product, isFollowing: !product.isFollowing } : product
+  const isFollowing = (productId: number): boolean => {
+    return productInterests.some(interest => 
+      interest.productId === productId && interest.status === 'active'
     );
-    setProducts(updatedProducts);
   };
 
-  const savePreferences = async () => {
-    setSaving(true);
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const toggleFollow = async (productId: number) => {
+    if (!companyId) return;
+
+    const isCurrentlyFollowing = isFollowing(productId);
+    const product = products.find(p => p.id === productId);
+    
     try {
       const token = getAuthToken();
-      const followingProducts = products.filter(p => p.isFollowing).map(p => p.name);
-      
-      const response = await fetch('http://localhost:3000/api/notifications/preferences', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ products: followingProducts })
-      });
 
-      if (!response.ok) {
-        throw new Error('Greška pri čuvanju podešavanja');
+      if (isCurrentlyFollowing) {
+        // If following, delete the interest
+        const response = await fetch(`http://localhost:3000/api/product-interests/company/${companyId}/product/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Greška pri brisanju interesovanja');
+        }
+
+        // Remove from local state
+        setProductInterests(prev => prev.filter(interest => 
+          !(interest.productId === productId && interest.companyId === companyId)
+        ));
+
+        showToast(`Uspesno ste se odjavili sa obaveštenja za ${product?.name}`, 'success');
+      } else {
+        // If not following, create new interest
+        const response = await fetch('http://localhost:3000/api/product-interests', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            companyId: companyId,
+            productId: productId
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Greška pri dodavanju interesovanja');
+        }
+
+        const newInterest = await response.json();
+        
+        // Add to local state
+        setProductInterests(prev => [...prev, {
+          ...newInterest,
+          product: products.find(p => p.id === productId)!
+        }]);
+
+        showToast(`Uspesno ste se pretplatili na obaveštenja za ${product?.name}`, 'success');
       }
-
-      // Show success message or handle response
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Došlo je do greške');
-    } finally {
-      setSaving(false);
+      const errorMessage = err instanceof Error ? err.message : 'Došlo je do greške';
+      showToast(errorMessage, 'error');
     }
   };
 
@@ -123,6 +183,18 @@ const NotificationPreferences: React.FC = () => {
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Tržišna Obaveštenja" />
+      
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg ${
+          toast.type === 'success' 
+            ? 'bg-green-500 text-white' 
+            : 'bg-red-500 text-white'
+        }`}>
+          {toast.message}
+        </div>
+      )}
+
       <div className="container mx-auto p-6">
         <Card className="mb-6">
           <CardHeader className="flex items-center gap-2">
@@ -131,6 +203,7 @@ const NotificationPreferences: React.FC = () => {
           <CardBody>
             <p className="mb-6 text-blue-900 bg-blue-100 rounded-md p-3">
               Izaberite proizvode za koje želite da dobijate SMS poruke kada se pojave nove ponude ili potražnje na tržištu.
+              Promene se automatski čuvaju kada kliknete na prekidač.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -150,24 +223,23 @@ const NotificationPreferences: React.FC = () => {
                     <span className="font-medium">{product.name}</span>
                   </div>
                   <Switch
-                    checked={product.isFollowing}
+                    checked={isFollowing(product.id)}
                     onCheckedChange={() => toggleFollow(product.id)}
                   />
                 </div>
               ))}
             </div>
 
-            <div className="mt-8 flex flex-col items-end">
-              <Button
-                onClick={savePreferences}
-                disabled={saving}
-                className="bg-primary text-white hover:bg-primary/90 disabled:opacity-50"
-              >
-                {saving ? 'Čuvanje...' : 'Sačuvaj Podešavanja'}
-              </Button>
-              <span className="mt-2 text-xs text-gray-500 text-right">
-                Nakon svake izmene, obavezno kliknite na „Sačuvaj Podešavanja" da bi promene bile sačuvane.
-              </span>
+            <div className="mt-8">
+              <div className="text-sm text-gray-600 bg-gray-50 p-4 rounded-md">
+                <h3 className="font-semibold mb-2">Kako funkcioniše:</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Kada uključite prekidač, automatski se pretplatite na obaveštenja za taj proizvod</li>
+                  <li>Kada isključite prekidač, automatski se odjavite sa obaveštenja</li>
+                  <li>Promene se čuvaju odmah - nema potrebe za dodatnim dugmetom</li>
+                  <li>Dobićete SMS poruke kada se pojave nove ponude za izabrane proizvode</li>
+                </ul>
+              </div>
             </div>
           </CardBody>
         </Card>

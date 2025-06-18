@@ -60,7 +60,7 @@ export const sendSMSNotification = async (
 };
 
 export const notifyInterestedCompanies = async (
-  product: string,
+  productId: number,
   offerDetails: {
     quantity: number;
     price: string;
@@ -73,11 +73,12 @@ export const notifyInterestedCompanies = async (
     // Find all companies interested in this product
     const interestedCompanies = await prisma.productInterest.findMany({
       where: {
-        product,
+        productId,
         type: 'subscription',
         status: 'active',
       },
       include: {
+        product: true, // Include product to get the name
         company: {
           include: {
             users: true // Get all users of the company
@@ -92,7 +93,7 @@ export const notifyInterestedCompanies = async (
         if (user.phoneNumber) {
           await sendSMSNotification(
             user.phoneNumber,
-            product,
+            interest.product.name, // Use product name from the relation
             offerDetails
           );
         }

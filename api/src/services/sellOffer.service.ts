@@ -75,7 +75,7 @@ export const createSellOfferService = async (req: AuthRequest) => {
     })
 
     if (company) {
-      await notifyInterestedCompanies(variant.product.name, {
+      await notifyInterestedCompanies(variant.product.id, {
         quantity: parseFloat(fields.quantity?.[0] || '0'),
         price: fields.price?.[0] || '0',
         city: fields.city?.[0] || '',
