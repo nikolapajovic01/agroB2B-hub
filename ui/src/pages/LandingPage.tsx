@@ -218,6 +218,32 @@ const LandingPage = () => {
             </div>
           </section>
 
+          {/* Pregled Transakcija */}
+          <section className="grid md:grid-cols-2 gap-8 items-center mt-20">
+            <div className="order-1">
+              <div className="bg-gray-100 dark:bg-boxdark-2 p-4 rounded-lg">
+                <img 
+                  src="/images/izvestajTransakcija.png" 
+                  alt="Pregled Transakcija" 
+                  className="rounded-lg w-full h-auto shadow-lg"
+                />
+              </div>
+            </div>
+            <div className="order-2">
+              <h2 className="text-2xl font-bold text-black dark:text-white mb-4">
+                Pregled Transakcija i Pretraga
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Pratite sve realizovane transakcije na platformi uz napredne opcije pretrage i filtriranja:
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                <li>Pretraga i filtriranje po proizvodu, mesecu i državi izvoza</li>
+                <li>Detaljan prikaz količina, vrednosti i cena po transakciji</li>
+                <li>Analitika i statistika za donošenje boljih poslovnih odluka</li>
+              </ul>
+            </div>
+          </section>
+
           {/* Services Section */}
           <section className="bg-gray-50 dark:bg-boxdark-2 rounded-lg p-8">
             <h2 className="text-2xl font-bold text-black dark:text-white mb-6 text-center">
