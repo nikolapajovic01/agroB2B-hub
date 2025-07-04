@@ -35,6 +35,8 @@ const NotificationPreferences: React.FC = () => {
   const [companyId, setCompanyId] = useState<number | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,7 +50,7 @@ const NotificationPreferences: React.FC = () => {
         setCompanyId(user.companyId);
 
         // Fetch all products
-        const productsResponse = await fetch('http://localhost:3000/api/products', {
+        const productsResponse = await fetch(`${API_URL}/api/products`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -61,7 +63,7 @@ const NotificationPreferences: React.FC = () => {
         const productsData = await productsResponse.json();
 
         // Fetch user's product interests
-        const interestsResponse = await fetch(`http://localhost:3000/api/product-interests/company/${user.companyId}`, {
+        const interestsResponse = await fetch(`${API_URL}/api/product-interests/company/${user.companyId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -107,7 +109,7 @@ const NotificationPreferences: React.FC = () => {
 
       if (isCurrentlyFollowing) {
         // If following, delete the interest
-        const response = await fetch(`http://localhost:3000/api/product-interests/company/${companyId}/product/${productId}`, {
+        const response = await fetch(`${API_URL}/api/product-interests/company/${companyId}/product/${productId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -126,7 +128,7 @@ const NotificationPreferences: React.FC = () => {
         showToast(`Uspesno ste se odjavili sa obaveštenja za ${product?.name}`, 'success');
       } else {
         // If not following, create new interest
-        const response = await fetch('http://localhost:3000/api/product-interests', {
+        const response = await fetch(`${API_URL}/api/product-interests`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,

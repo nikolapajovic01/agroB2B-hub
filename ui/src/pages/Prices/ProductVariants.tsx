@@ -23,11 +23,13 @@ const ProductVariants = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchProductVariants = async () => {
       try {
         const token = getAuthToken();
-        const response = await fetch(`http://localhost:3000/api/products/${productId}`, {
+        const response = await fetch(`${API_URL}/api/products/${productId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

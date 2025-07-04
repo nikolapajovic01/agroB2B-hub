@@ -16,10 +16,12 @@ const Map2025: React.FC = () => {
   const [exportData, setExportData] = useState<ExportData | null>(null);
   const [mapInstance, setMapInstance] = useState<any>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/exports/2025/percentage');
+        const response = await axios.get(`${API_URL}/api/exports/2025/percentage`);
         setExportData(response.data);
       } catch (error) {
         console.error('Error fetching export data:', error);

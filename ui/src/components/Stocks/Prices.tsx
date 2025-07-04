@@ -20,9 +20,10 @@ const Prices: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/products/overview') // prilagodi ako koristiš drugi port
+    fetch(`${API_URL}/api/products/overview`) // prilagodi ako koristiš drugi port
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error('Greška pri povlačenju proizvoda:', err));

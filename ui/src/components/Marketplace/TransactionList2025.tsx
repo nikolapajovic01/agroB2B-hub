@@ -21,8 +21,10 @@ const TransactionList2025: React.FC = () => {
     return months.indexOf(monthName);
   };
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
-    fetch('http://localhost:3000/api/exports/year/2025')
+    fetch(`${API_URL}/api/exports/year/2025`)
       .then(res => res.json())
       .then(data => setTransactions(data))
       .catch(err => console.error('Greška pri dohvatanju transakcija:', err));

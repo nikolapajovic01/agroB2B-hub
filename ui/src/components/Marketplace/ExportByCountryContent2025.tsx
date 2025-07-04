@@ -13,10 +13,12 @@ const ExportByCountryContent2025: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<Period>('Celokupna 2025');
   const [exportData, setExportData] = useState<Record<string, ExportRecord[]>>({});
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/exports/2025/statistics');
+        const response = await axios.get(`${API_URL}/api/exports/2025/statistics`);
         setExportData(response.data);
       } catch (error) {
         console.error('Error fetching export data:', error);
