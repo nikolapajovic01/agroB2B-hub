@@ -147,31 +147,46 @@ const MapExportByCountry: React.FC = () => {
     setSelectedPeriod(event.target.value as PeriodKey);
   };
 
+  // Detekcija mobilnog uređaja
+  const isMobile = typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    return (
+      <div className="col-span-12 xl:col-span-6 flex items-center justify-center min-h-[300px]">
+        <span className="text-gray-500">Mapa nije dostupna na mobilnim uređajima.</span>
+      </div>
+    );
+  }
+
   useEffect(() => {
     const el = document.getElementById('mapTwo');
     if (!el) return;
-    const mapInstance = new jsVectorMap({
-      selector: '#mapTwo',
-      map: 'world',
-      zoomButtons: true,
-      regionStyle: {
-        initial: {
-          fontFamily: 'Satoshi',
-          fill: '#A9BDFF',
+    let mapInstance: any;
+    try {
+      mapInstance = new jsVectorMap({
+        selector: '#mapTwo',
+        map: 'world',
+        zoomButtons: true,
+        regionStyle: {
+          initial: {
+            fontFamily: 'Satoshi',
+            fill: '#A9BDFF',
+          },
+          hover: {
+            fillOpacity: 1,
+            fill: '#3056D3',
+          },
         },
-        hover: {
-          fillOpacity: 1,
-          fill: '#3056D3',
+        onRegionTooltipShow: function (tooltip: any, code: string) {
+          if (code === 'EG') {
+            tooltip.selector.innerHTML = tooltip.text() + ' <b>(Hello Russia)</b>';
+          }
         },
-      },
-      onRegionTooltipShow: function (tooltip: any, code: string) {
-        if (code === 'EG') {
-          tooltip.selector.innerHTML = tooltip.text() + ' <b>(Hello Russia)</b>';
-        }
-      },
-    });
+      });
+    } catch (e) {
+      console.error('Greška u inicijalizaciji mape:', e);
+    }
     return () => {
-      mapInstance.destroy();
+      if (mapInstance) mapInstance.destroy();
     };
   }, []);
   
