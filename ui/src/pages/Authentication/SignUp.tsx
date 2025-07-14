@@ -68,8 +68,8 @@ const SignUp: React.FC = () => {
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
-            <div className="py-17.5 px-26 text-center">
-              <Logo />
+            <div className="py-17.5 px-26 flex flex-col items-center text-center">
+              <Logo color="black" />
               <p className="2xl:px-20">
                 Dobrodošli na vodeću B2B platformu za trgovinu voćem i povrćem. 
                 Povezujemo poljoprivredna gazdinstva i kompanije uz garantovanu 
@@ -102,16 +102,18 @@ const SignUp: React.FC = () => {
           <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               {/* Logo za mobilne uređaje */}
-              <div className="xl:hidden mb-6 text-center">
+              <div className="xl:hidden mb-6 flex flex-col items-center text-center">
                 <Link to="/">
                   <Logo color="black" />
                 </Link>
               </div>
               
-              <span className="mb-1.5 block font-medium">Započnite besplatno</span>
-              <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Registracija na AgroB2B Hub
-              </h2>
+              <div className="flex flex-col items-center text-center">
+                <span className="mb-1.5 block font-medium">Započnite besplatno</span>
+                <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+                  Registracija na AgroB2B Hub
+                </h2>
+              </div>
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-5.5">
