@@ -45,6 +45,9 @@ const SignUp: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 409 || (data.error && data.error.includes('Korisnik sa ovim emailom već postoji'))) {
+          throw new Error('Korisnik je već registrovan');
+        }
         throw new Error(data.error || 'Greška pri registraciji');
       }
 

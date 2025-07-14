@@ -69,13 +69,15 @@ const TransactionList2024: React.FC = () => {
             ))}
           </select>
           <input
-              value={searchCountry}
-              onChange={(e) => {
-                setSearchCountry(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="rounded-lg border-stroke px-3 py-2 dark:border-strokedark"
-            />
+            type="text"
+            placeholder="Pretraga po državi"
+            value={searchCountry}
+            onChange={(e) => {
+              setSearchCountry(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="rounded-lg border-stroke px-3 py-2 dark:border-strokedark"
+          />
             {/* Reset filtera */}
             <button
               onClick={() => {

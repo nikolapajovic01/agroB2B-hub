@@ -16,8 +16,11 @@ export const signupHandler = async (req: Request, res: Response) => {
     )
 
     res.json({ message: 'Korisnik uspešno registrovan. Proverite email.' })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Signup error:', error)
+    if (error.message === 'Korisnik sa ovim emailom već postoji') {
+      return res.status(409).json({ error: error.message })
+    }
     res.status(500).json({ error: 'Greška pri registraciji' })
   }
 }
