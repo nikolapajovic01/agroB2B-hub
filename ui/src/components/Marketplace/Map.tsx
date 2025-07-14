@@ -148,6 +148,8 @@ const MapExportByCountry: React.FC = () => {
   };
 
   useEffect(() => {
+    const el = document.getElementById('mapTwo');
+    if (!el) return;
     const mapInstance = new jsVectorMap({
       selector: '#mapTwo',
       map: 'world',
@@ -168,9 +170,8 @@ const MapExportByCountry: React.FC = () => {
         }
       },
     });
-  
     return () => {
-      mapInstance.destroy(); // ✅ čišćenje instance mape
+      mapInstance.destroy();
     };
   }, []);
   
@@ -228,7 +229,7 @@ const MapExportByCountry: React.FC = () => {
             </div>
           </div>
         </div>
-        <div id="mapTwo" className="mapTwo map-btn h-65 md:h-95"></div>
+        <div id="mapTwo" style={{ width: '100%', minHeight: 300, height: '300px', maxWidth: '100%' }}></div>
       </div>
       <div className="space-y-2.5 border-t border-stroke p-4 dark:border-strokedark md:p-6 xl:p-7.5">
         {getCurrentData().map((item, index) => (
