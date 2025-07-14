@@ -72,7 +72,9 @@ const SignUp: React.FC = () => {
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 flex flex-col items-center text-center">
-              <Logo color="black" />
+              <Link to="/">
+                <Logo color="black" />
+              </Link>
               <p className="2xl:px-20">
                 Dobrodošli na vodeću B2B platformu za trgovinu voćem i povrćem. 
                 Povezujemo poljoprivredna gazdinstva i kompanije uz garantovanu 
@@ -84,7 +86,7 @@ const SignUp: React.FC = () => {
                   Potrebna vam je pomoć? Kontaktirajte našu korisničku podršku:
                 </p>
                 <p className="text-sm font-medium text-black dark:text-white mt-1">
-                  +38131894510
+                  +381613004984
                 </p>
               </div>
 

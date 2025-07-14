@@ -63,7 +63,7 @@ const Header = (props: {
         {/* Phone number for mobile */}
         <div className="sm:hidden">
           <span className="text-xs font-medium dark:text-white">
-            +38131894510
+            +381613004984
           </span>
         </div>
 
@@ -86,7 +86,7 @@ const Header = (props: {
               />
             </svg>
             <span className="text-sm font-medium dark:text-white">
-              Korisnička podrška: +38131894510
+              Korisnička podrška: +381613004984
             </span>
           </div>
         </div>

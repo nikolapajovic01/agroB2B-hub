@@ -22,7 +22,7 @@ const LandingPage = () => {
             <div className="flex items-center w-full sm:w-auto justify-between">
               <h1 className="text-2xl font-bold text-black dark:text-white">AgroB2B Hub</h1>
               <span className="ml-4 text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">
-                Podrška: <a href="tel:+38131894510" className="text-primary hover:underline">+381 31 894 510</a>
+                Podrška: <a href="tel:+381613004984" className="text-primary hover:underline">+381 31 894 510</a>
               </span>
             </div>
             
@@ -291,7 +291,7 @@ const LandingPage = () => {
               <div>
                 <h3 className="text-lg font-bold text-black dark:text-white mb-4">Kontakt</h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  Podrška: <a href="tel:+38131894510" className="text-primary hover:underline">+381 31 894 510</a>
+                  Podrška: <a href="tel:+381613004984" className="text-primary hover:underline">+381 31 894 510</a>
                 </p>
                 <p className="text-gray-600 dark:text-gray-300 mt-2">
                   Email: <a href="mailto:info@agrob2bhub.com" className="text-primary hover:underline">info@agrob2bhub.com</a>
