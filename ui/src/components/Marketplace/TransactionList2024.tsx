@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-const types = [
-  'Sve', 'Rolend', 'Griz', 'Organic', 'Miker', 'Bruh', 'Ostalo'
-];
-
 const TransactionList2024: React.FC = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMonth, setSelectedMonth] = useState('Sve');
-  const [selectedType, setSelectedType] = useState('Sve');
   const [searchCountry, setSearchCountry] = useState('');
   const itemsPerPage = 25;
 
@@ -37,17 +32,12 @@ const TransactionList2024: React.FC = () => {
       const matchesMonth =       selectedMonth === 'Sve' ||
       transactionDate.getMonth() + 1 === getMonthNumber(selectedMonth);
 
-      // Tip maline - jednostavan primer (možeš unaprediti po potrebi)
-      const matchesType =
-        selectedType === 'Sve' ||
-        (transaction.type && transaction.type.toLowerCase() === selectedType.toLowerCase());
-
       // Država
       const matchesCountry =
         !searchCountry ||
         (transaction.countryName && transaction.countryName.toLowerCase().includes(searchCountry.toLowerCase()));
 
-      return matchesMonth && matchesType && matchesCountry;
+      return matchesMonth && matchesCountry;
     })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -78,21 +68,7 @@ const TransactionList2024: React.FC = () => {
               <option key={month} value={month}>{month}</option>
             ))}
           </select>
-          <select
-              value={selectedType}
-              onChange={(e) => {
-                setSelectedType(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="rounded-lg border-stroke px-3 py-2 dark:border-strokedark"
-            >
-              {types.map((type) => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-            <input
-              type="text"
-              placeholder="Pretraži po državi..."
+          <input
               value={searchCountry}
               onChange={(e) => {
                 setSearchCountry(e.target.value);
@@ -104,7 +80,6 @@ const TransactionList2024: React.FC = () => {
             <button
               onClick={() => {
                 setSelectedMonth('Januar');
-                setSelectedType('Sve');
                 setSearchCountry('');
                 setCurrentPage(1);
               }}
