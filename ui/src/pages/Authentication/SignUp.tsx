@@ -104,7 +104,7 @@ const SignUp: React.FC = () => {
               {/* Logo za mobilne uređaje */}
               <div className="xl:hidden mb-6 text-center">
                 <Link to="/">
-                  <Logo />
+                  <Logo color="black" />
                 </Link>
               </div>
               

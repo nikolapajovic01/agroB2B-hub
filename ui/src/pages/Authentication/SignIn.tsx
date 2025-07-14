@@ -95,7 +95,7 @@ const SignIn: React.FC = () => {
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
-              <Logo />
+              <Logo color="black" />
 
               <p className="2xl:px-20">
                 Dobrodošli na vodeću B2B platformu za trgovinu voćem i povrćem.
@@ -123,7 +123,7 @@ const SignIn: React.FC = () => {
               {/* Logo za mobilne uređaje */}
               <div className="xl:hidden mb-6 text-center">
                 <Link to="/">
-                  <Logo />
+                  <Logo color="black" />
                 </Link>
               </div>
               
