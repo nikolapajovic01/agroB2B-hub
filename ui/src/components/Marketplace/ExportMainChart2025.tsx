@@ -275,7 +275,7 @@ const ExportMainChart2025: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-primary">Rolend</p>
-              <p className="text-sm font-medium">15,658 tona</p>
+              <p className="text-sm font-medium">17,969 tona</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -285,7 +285,7 @@ const ExportMainChart2025: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-secondary">Griz</p>
-              <p className="text-sm font-medium">6,117 tona</p>
+              <p className="text-sm font-medium">6,786 tona</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -295,7 +295,7 @@ const ExportMainChart2025: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-primary">Organic</p>
-              <p className="text-sm font-medium">1,923 tona</p>
+              <p className="text-sm font-medium">2,038 tona</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -305,7 +305,7 @@ const ExportMainChart2025: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-secondary">Ostalo</p>
-              <p className="text-sm font-medium">2,139 tona</p>
+              <p className="text-sm font-medium">2,563 tona</p>
             </div>
           </div>
         </div>
