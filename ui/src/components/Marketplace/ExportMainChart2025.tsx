@@ -144,6 +144,7 @@ const ExportMainChart2025: React.FC = () => {
         3503714, // March
         3145881, // April
         2756302, // May
+        2310934, // June
       ],
     },
     {
@@ -154,6 +155,7 @@ const ExportMainChart2025: React.FC = () => {
         1465565, // Mar
         1174142, // Apr
         1269412, // May
+        668693, // June
       ],
     },
     {
@@ -164,6 +166,7 @@ const ExportMainChart2025: React.FC = () => {
         519956, // Mar
         349256, // Apr
         172448, // May
+        114748, // June
       ],
     },
     {
@@ -174,6 +177,7 @@ const ExportMainChart2025: React.FC = () => {
         328949,  // Mar
         314203,  // Apr
         385303,  // May
+        424343, // June
       ],
     },
   ];
@@ -187,6 +191,7 @@ const ExportMainChart2025: React.FC = () => {
         4.3, // March
         4.31, // April
         4.44, // May
+        4.49, // June
       ],
     },
     {
@@ -197,6 +202,7 @@ const ExportMainChart2025: React.FC = () => {
         3.06, // Mar
         3, // Apr
         2.95, // May
+        3.1, // June
       ],
     },
     {
@@ -207,6 +213,7 @@ const ExportMainChart2025: React.FC = () => {
         4.86, // Mar
         5.15, // Apr
         5.02, // May
+        4.85, // June
       ],
     },
     {
@@ -217,6 +224,7 @@ const ExportMainChart2025: React.FC = () => {
         3.48, // Mar
         3.42, // Apr
         3.47, // May
+        3.29, // June
       ],
     },
   ];

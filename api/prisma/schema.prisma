@@ -191,7 +191,7 @@ model Export {
   countryName  String
   quantityKg   Float
   valueEur     Float
-  unitPriceEur Float
+  unitPriceEur Float?
   month        Int
   year         Int
   type         String   @default("ostalo") // rolend, griz, miker, ostalo
