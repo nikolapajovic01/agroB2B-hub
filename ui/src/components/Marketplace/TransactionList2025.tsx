@@ -153,7 +153,7 @@ const TransactionList2025: React.FC = () => {
                       € {transaction.valueEur.toFixed(2)}
                     </div>
                     <div className="w-2/12 font-medium text-xs md:text-sm break-words">
-                      € {transaction.unitPriceEur.toFixed(2)}
+                      {transaction.unitPriceEur != null ? `€ ${transaction.unitPriceEur.toFixed(2)}` : 'N/A'}
                     </div>
                   </div>
                 ))}
