@@ -89,6 +89,7 @@ const options: ApexOptions = {
       'Mar',
       'Apr',
       'Maj',
+      'Jun'
     ],
     axisBorder: {
       show: false,
