@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import DefaultLayout from '../../layout/DefaultLayout';
 import TransactionList2024 from "../../components/Marketplace/TransactionList2024";
 import TransactionList2025 from "../../components/Marketplace/TransactionList2025";
+import { useSubscription } from '../../contexts/SubscriptionContext';
 
 const Transactions: React.FC = () => {
   const location = useLocation();

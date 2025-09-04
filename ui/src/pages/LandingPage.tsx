@@ -47,6 +47,12 @@ const LandingPage = () => {
                 >
                   Registracija
                 </Link>
+                <Link
+                  to="/pricing"
+                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-emerald-600 py-2 px-6 text-center font-medium text-white hover:bg-emerald-700"
+                >
+                  Cene
+                </Link>
               </div>
             )}
 

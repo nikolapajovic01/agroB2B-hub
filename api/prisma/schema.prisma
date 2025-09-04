@@ -43,6 +43,14 @@ model Company {
   bonitet      String         @default("A")
   certificates String[]       @default([])
   photoUrl     String         @default("https://fruit-products.s3.eu-central-1.amazonaws.com/vecteezy_user-icon-on-transparent-background_19879198.png")
+  
+  // Subscription fields
+  subscriptionStatus String   @default("trial") // trial, active, expired, cancelled
+  subscriptionStartDate DateTime?
+  subscriptionEndDate DateTime?
+  trialEndDate DateTime?      // When trial period ends
+  isPaid Boolean             @default(false)
+  
   users        User[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt

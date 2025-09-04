@@ -29,8 +29,10 @@ const {
 
 const ENV: ApplicationEnv = NODE_ENV as ApplicationEnv
 
+// Do not crash app if email credentials are missing; disable email features instead
 if (!RESEND_API_KEY || !RESEND_FROM_EMAIL) {
-  throw new Error('Missing email service credentials in .env')
+  // eslint-disable-next-line no-console
+  console.warn('Email service credentials are missing; email features will be disabled')
 }
 
 export const CONFIG = {

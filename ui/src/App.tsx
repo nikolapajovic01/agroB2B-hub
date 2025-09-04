@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
+import { SubscriptionProvider } from './contexts/SubscriptionContext';
 
 import Settings from './pages/Pages/Settings';
 import SellOffers from './pages/Pages/SellOffers';
@@ -25,6 +26,7 @@ import LandingPage from "./pages/LandingPage";
 import ProductVariants from './pages/Prices/ProductVariants';
 import CompaniesList from './pages/Companies/CompaniesList';
 import NotificationPreferences from './pages/NotificationPreferences';
+import Pricing from './pages/Pricing';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,7 +43,7 @@ function App() {
   return loading ? (
     <Loader />
   ) : (
-    <>
+    <SubscriptionProvider>
       <Routes>
         {/*<Route*/}
         {/*  path="/dashboard/analytics"*/}
@@ -522,6 +524,15 @@ function App() {
           }
         />
         <Route
+          path="/pricing"
+          element={
+            <>
+              <PageTitle title="Cene i planovi" />
+              <Pricing />
+            </>
+          }
+        />
+        <Route
           path="/dashboard/current"
           element={
             <ProtectedRoute
@@ -681,7 +692,7 @@ function App() {
           }
         />
       </Routes>
-    </>
+    </SubscriptionProvider>
   );
 }
 

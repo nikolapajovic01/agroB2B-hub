@@ -2,6 +2,7 @@ import { useMemo, useEffect, useState } from 'react';
 import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getAuthToken, getUserDetails } from "../../utils/authUtils";
+import { useSubscription } from '../../contexts/SubscriptionContext';
 import { Column } from 'react-table';
 
 // Import product images
@@ -64,6 +65,7 @@ const DataTableOne = () => {
   const [variantName, setVariantName] = useState<string | null>(null);
   const user = getUserDetails();
   const userType = user?.userType || null;
+  const { hasAccess, isLoading: subscriptionLoading } = useSubscription();
 
   const [searchParams] = useSearchParams();
   const variantId = searchParams.get('variantId');
@@ -174,10 +176,11 @@ const DataTableOne = () => {
   ], []);
 
   const tableData = useMemo(() => data, [data]);
+  const gatedData = useMemo(() => (subscriptionLoading ? tableData : (hasAccess ? tableData : tableData.slice(0, 3))), [tableData, hasAccess, subscriptionLoading]);
   const tableInstance = useTable<SellOffer>(
     {
       columns,
-      data: tableData,
+      data: gatedData,
     },
     useGlobalFilter,
     useSortBy,
@@ -225,6 +228,11 @@ const DataTableOne = () => {
 
   return (
     <section className="data-table-common rounded-sm border border-stroke bg-white py-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+      {!subscriptionLoading && !hasAccess && (
+        <div className="mx-8 mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-amber-800 text-sm dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+          Pregled prodajnih ponuda je ograničen u besplatnoj verziji. Prikazane su samo uzorkovane ponude, a detalji su sakriveni.
+        </div>
+      )}
 
       {/* Naslov + Reset filter */}
       <div className="flex justify-between items-center mb-4 px-8">
@@ -308,14 +316,31 @@ const DataTableOne = () => {
               return (
                 <tr 
                   {...row.getRowProps()} 
-                  className="border-t border-stroke dark:border-strokedark hover:bg-gray-100 dark:hover:bg-meta-4 cursor-pointer"
-                  onClick={() => navigate(`/sell-offers/${row.original.id}`)}
+                  className={`border-t border-stroke dark:border-strokedark ${subscriptionLoading ? 'hover:bg-gray-100 dark:hover:bg-meta-4 cursor-pointer' : (hasAccess ? 'hover:bg-gray-100 dark:hover:bg-meta-4 cursor-pointer' : 'opacity-70 cursor-not-allowed')}`}
+                  onClick={() => {
+                    if (!subscriptionLoading && !hasAccess) return;
+                    navigate(`/sell-offers/${row.original.id}`)
+                  }}
                 >
-                  {row.cells.map((cell) => (
-                    <td {...cell.getCellProps()} className="px-4 py-2">
-                      {cell.render('Cell')}
-                    </td>
-                  ))}
+                  {row.cells.map((cell) => {
+                    const headerLabel = typeof cell.column.Header === 'string' ? cell.column.Header : '';
+                    const isSensitive = ['Količina', 'Mesto', 'Cena', 'Važi od', 'Važi do'].includes(headerLabel);
+                    return (
+                      <td {...cell.getCellProps()} className="px-4 py-2">
+                        {hasAccess
+                          ? cell.render('Cell')
+                          : headerLabel === 'Proizvod'
+                            ? (() => {
+                                const val = (cell.value as string) || '';
+                                const base = val.split(' - ')[0] || '***';
+                                return <span>{base} - ***</span>;
+                              })()
+                            : isSensitive
+                              ? <span>***</span>
+                              : cell.render('Cell')}
+                      </td>
+                    );
+                  })}
                 </tr>
               );
             })}

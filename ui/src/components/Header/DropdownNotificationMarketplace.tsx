@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getAuthToken } from "../../utils/authUtils";
+import { useSubscription } from '../../contexts/SubscriptionContext';
 
 interface Notification {
   id: number;
@@ -19,6 +20,7 @@ const DropdownNotificationMarketplace = () => {
   const [notifying, setNotifying] = useState(true);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [, setError] = useState<string | null>(null);
+  const { hasAccess, isLoading } = useSubscription();
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
@@ -136,25 +138,41 @@ const DropdownNotificationMarketplace = () => {
       >
         <div className="px-4.5 py-3">
           <h5 className="text-sm font-medium text-bodydark2">Obaveštenja</h5>
+          {!isLoading && !hasAccess && (
+            <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-amber-800 text-xs dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+              Premium funkcionalnost – prikaz detaljnih obaveštenja nije dostupan u besplatnoj verziji.
+            </div>
+          )}
         </div>
 
         <ul className="flex h-auto flex-col overflow-y-auto">
-          {notifications.map((notification) => (
-            <li key={notification.id}>
-              <Link
-                className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                to={notification.link}
-              >
+          {hasAccess ? (
+            notifications.map((notification) => (
+              <li key={notification.id}>
+                <Link
+                  className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
+                  to={notification.link}
+                >
+                  <p className="text-sm">
+                    <span className="text-black dark:text-white">
+                      {notification.title}
+                    </span>{' '}
+                    {notification.description}
+                  </p>
+                  <p className="text-xs">{formatDate(notification.createdAt)}</p>
+                </Link>
+              </li>
+            ))
+          ) : (
+            <li>
+              <div className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-4 opacity-70 dark:border-strokedark">
                 <p className="text-sm">
-                  <span className="text-black dark:text-white">
-                    {notification.title}
-                  </span>{' '}
-                  {notification.description}
+                  <span className="text-black dark:text-white">***</span> Nije dostupno u besplatnoj verziji
                 </p>
-                <p className="text-xs">{formatDate(notification.createdAt)}</p>
-              </Link>
+                <p className="text-xs">***</p>
+              </div>
             </li>
-          ))}
+          )}
         </ul>
       </div>
     </li>

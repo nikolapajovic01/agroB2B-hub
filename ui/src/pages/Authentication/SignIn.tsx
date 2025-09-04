@@ -46,6 +46,9 @@ const SignIn: React.FC = () => {
       localStorage.setItem('authToken', token);
       localStorage.removeItem('token');
       localStorage.setItem('user', JSON.stringify(user)); // <<< snimi kompletan user objekat
+      
+      // Dispatch custom event to notify subscription context
+      window.dispatchEvent(new CustomEvent('authChange'));
 
       // ✅ Redirekcija na osnovu userType
       if (user.userType === 'individual') {

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useSubscription } from '../../contexts/SubscriptionContext';
 
 const types = [
   'Sve', 'Rolend', 'Griz', 'Organic', 'Miker', 'Bruh', 'Ostalo', 'Uvoz', 'Blok'
 ];
 
 const TransactionList2025: React.FC = () => {
+  const { hasAccess, isLoading } = useSubscription();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMonth, setSelectedMonth] = useState('Sve');
@@ -59,9 +61,16 @@ const TransactionList2025: React.FC = () => {
         
         {/* Header */}
         <div className="p-4 md:p-6 xl:p-7.5 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4">
-          <h2 className="text-title-sm2 font-bold text-black dark:text-white">
-            Izveštaj transakcija 2025
-          </h2>
+          <div>
+            <h2 className="text-title-sm2 font-bold text-black dark:text-white">
+              Izveštaj transakcija 2025
+            </h2>
+            {!isLoading && !hasAccess && (
+              <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
+                ⚠️ Detaljni podaci nisu dostupni u besplatnoj verziji
+              </p>
+            )}
+          </div>
           <select
             value={selectedMonth}
             onChange={(e) => {
@@ -131,29 +140,32 @@ const TransactionList2025: React.FC = () => {
                 .map((transaction, index) => (
                   <div key={index} className="flex items-start gap-1 md:gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 p-2 rounded-md">
                     <div className="w-2/12 font-medium text-xs md:text-sm break-words">
-                      {formatDate(transaction.date)}
+                      {isLoading ? "..." : (hasAccess ? formatDate(transaction.date) : "***")}
                     </div>
                     <div className="w-2/12 font-medium text-xs md:text-sm break-words">
-                      {transaction.product}
+                      {isLoading ? "..." : (hasAccess ? transaction.product : "***")}
                     </div>
                     <div className="w-2/12 flex items-center gap-2 font-medium text-xs md:text-sm break-words">
-                      {transaction.countryCode && (
+                      {!isLoading && hasAccess && transaction.countryCode && (
                         <img
                           src={`https://flagcdn.com/w40/${transaction.countryCode.toLowerCase()}.png`}
                           alt={transaction.countryName}
                           className="h-4 w-6 object-cover rounded-sm"
                         />
                       )}
-                      {transaction.countryName}
+                      {isLoading ? "..." : (hasAccess ? transaction.countryName : "***")}
                     </div>
                     <div className="w-2/12 font-medium text-xs md:text-sm break-words">
-                      {transaction.quantityKg.toLocaleString()} kg
+                      {isLoading ? "..." : (hasAccess ? `${transaction.quantityKg.toLocaleString()} kg` : "*** kg")}
                     </div>
                     <div className="w-2/12 font-medium text-xs md:text-sm break-words">
-                      € {transaction.valueEur.toFixed(2)}
+                      {isLoading ? "..." : (hasAccess ? `€ ${transaction.valueEur.toFixed(2)}` : "€ ***")}
                     </div>
                     <div className="w-2/12 font-medium text-xs md:text-sm break-words">
-                      {transaction.unitPriceEur != null ? `€ ${transaction.unitPriceEur.toFixed(2)}` : 'N/A'}
+                      {isLoading ? "..." : (hasAccess 
+                        ? (transaction.unitPriceEur != null ? `€ ${transaction.unitPriceEur.toFixed(2)}` : 'N/A')
+                        : "€ ***"
+                      )}
                     </div>
                   </div>
                 ))}

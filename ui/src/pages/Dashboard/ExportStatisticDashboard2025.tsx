@@ -4,8 +4,11 @@ import DefaultLayout from '../../layout/DefaultLayout';
 import ExportMainChart2025 from "../../components/Marketplace/ExportMainChart2025";
 import MapExportByCountry from "../../components/Marketplace/Map2025";
 import ExportByCountryContent2025 from "../../components/Marketplace/ExportByCountryContent2025";
+import { useSubscription } from '../../contexts/SubscriptionContext';
 
 const ExportStatisticDashboard2025: React.FC = () => {
+  const { hasAccess, isLoading } = useSubscription();
+
   return (
     <DefaultLayout>
       <h2 className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow mb-2 text-center tracking-wide">
@@ -17,7 +20,12 @@ const ExportStatisticDashboard2025: React.FC = () => {
         </span>
       </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Ukupan izvoz" total="31.263 tona" rate="25.7%" levelDown>
+        <CardDataStats 
+          title="Ukupan izvoz" 
+          total={isLoading ? "..." : (hasAccess ? "31.263 tona" : "*** tona")} 
+          rate={isLoading ? "..." : (hasAccess ? "25.7%" : "***%")} 
+          levelDown
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -36,7 +44,12 @@ const ExportStatisticDashboard2025: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Ukupna vrednost izvoza" total="€125.1M" rate="15.7%" levelUp>
+        <CardDataStats 
+          title="Ukupna vrednost izvoza" 
+          total={isLoading ? "..." : (hasAccess ? "€125.1M" : "€***M")} 
+          rate={isLoading ? "..." : (hasAccess ? "15.7%" : "***%")} 
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -59,7 +72,12 @@ const ExportStatisticDashboard2025: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Prosečna cena Rolend" total="€4,33" rate="56.3%" levelUp>
+        <CardDataStats 
+          title="Prosečna cena Rolend" 
+          total={isLoading ? "..." : (hasAccess ? "€4,33" : "€***")} 
+          rate={isLoading ? "..." : (hasAccess ? "56.3%" : "***%")} 
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -78,7 +96,12 @@ const ExportStatisticDashboard2025: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Prosečna cena Griz" total="€3,03" rate="59.5%" levelUp>
+        <CardDataStats 
+          title="Prosečna cena Griz" 
+          total={isLoading ? "..." : (hasAccess ? "€3,03" : "€***")} 
+          rate={isLoading ? "..." : (hasAccess ? "59.5%" : "***%")} 
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -104,10 +127,144 @@ const ExportStatisticDashboard2025: React.FC = () => {
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ExportMainChart2025/>
-        <MapExportByCountry/>
+        <div className="col-span-12 xl:col-span-8">
+          {isLoading ? (
+            <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-12">
+              <div className="flex items-center justify-center h-80">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p className="text-gray-600 dark:text-gray-300">Učitavanje...</p>
+                </div>
+              </div>
+            </div>
+          ) : hasAccess ? (
+            <ExportMainChart2025/>
+          ) : (
+            <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-12">
+              <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
+                <div className="flex w-full flex-wrap gap-3 sm:gap-5">
+                  <div className="flex min-w-47.5">
+                    <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
+                      <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
+                    </span>
+                    <div className="w-full">
+                      <p className="font-semibold text-primary">Rolend</p>
+                      <p className="text-sm font-medium">*** tona</p>
+                    </div>
+                  </div>
+                  <div className="flex min-w-47.5">
+                    <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-secondary">
+                      <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
+                    </span>
+                    <div className="w-full">
+                      <p className="font-semibold text-secondary">Griz</p>
+                      <p className="text-sm font-medium">*** tona</p>
+                    </div>
+                  </div>
+                  <div className="flex min-w-47.5">
+                    <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
+                      <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
+                    </span>
+                    <div className="w-full">
+                      <p className="font-semibold text-primary">Organic</p>
+                      <p className="text-sm font-medium">*** tona</p>
+                    </div>
+                  </div>
+                  <div className="flex min-w-47.5">
+                    <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-secondary">
+                      <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
+                    </span>
+                    <div className="w-full">
+                      <p className="font-semibold text-secondary">Ostalo</p>
+                      <p className="text-sm font-medium">*** tona</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex w-full max-w-45 justify-end">
+                  <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
+                    <button className="rounded py-1 px-3 text-xs font-medium text-black bg-white shadow-card dark:text-white dark:bg-boxdark">
+                      Količina
+                    </button>
+                    <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+                      Cena
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-center h-80 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="text-center">
+                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">
+                    Informacije nisu dostupne u besplatnoj verziji
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Aktivirajte pretplatu da vidite detaljne grafikone i analitike
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div className="col-span-12 xl:col-span-4">
+          {isLoading ? (
+            <div className="rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
+              <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-3"></div>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Učitavanje...</p>
+                </div>
+              </div>
+            </div>
+          ) : hasAccess ? (
+            <MapExportByCountry/>
+          ) : (
+            <div className="rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Mapa izvoza</h3>
+              <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="text-center">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Mapa nije dostupna u besplatnoj verziji
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        
         <div className="col-span-12 xl:col-span-6">
-          <ExportByCountryContent2025/>
+          {isLoading ? (
+            <div className="rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
+              <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-3"></div>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Učitavanje...</p>
+                </div>
+              </div>
+            </div>
+          ) : hasAccess ? (
+            <ExportByCountryContent2025/>
+          ) : (
+            <div className="rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Izvoz po zemljama</h3>
+              <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="text-center">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Detaljni podaci nisu dostupni u besplatnoj verziji
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

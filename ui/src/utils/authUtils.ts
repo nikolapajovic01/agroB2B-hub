@@ -30,6 +30,9 @@ export const isAuthenticated = (): boolean => {
   
   export const logout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    // Dispatch custom event to notify subscription context
+    window.dispatchEvent(new CustomEvent('authChange'));
     window.location.href = '/auth/signin';
   };
 

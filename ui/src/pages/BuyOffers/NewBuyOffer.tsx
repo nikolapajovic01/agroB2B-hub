@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
 import {getAuthToken} from "../../utils/authUtils";
+import { useSubscription } from '../../contexts/SubscriptionContext';
 
 interface Product {
   id: number;
@@ -31,6 +32,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const NewBuyOffer = () => {
     const navigate = useNavigate();
+    const { hasAccess, isLoading: subscriptionLoading } = useSubscription();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [products, setProducts] = useState<Product[]>([]);
@@ -84,6 +86,11 @@ const NewBuyOffer = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+
+        if (!subscriptionLoading && !hasAccess) {
+            setError('Ova funkcionalnost je dostupna samo uz aktivnu pretplatu.');
+            return;
+        }
 
         // Validate all required fields
         const requiredFields = {
@@ -147,7 +154,22 @@ const NewBuyOffer = () => {
                     </h3>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5.5 p-6.5">
+                {!subscriptionLoading && !hasAccess && (
+                    <div className="mx-6 mt-6 rounded-lg border border-amber-200 bg-gradient-to-r from-amber-50 to-amber-100/60 p-4 text-amber-800 dark:from-amber-900/20 dark:to-amber-800/10 dark:border-amber-800">
+                        <div className="flex items-start gap-3">
+                            <svg className="h-5 w-5 mt-0.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9V7a4 4 0 10-8 0v2a2 2 0 00-2 2v7a2 2 0 002 2h8a2 2 0 002-2v-7a2 2 0 00-2-2z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 13v3" />
+                            </svg>
+                            <div>
+                                <p className="font-medium">Premium funkcionalnost</p>
+                                <p className="text-sm opacity-90">Kreiranje kupovne ponude dostupno je samo uz aktivnu pretplatu.</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className={`flex flex-col gap-5.5 p-6.5 ${!subscriptionLoading && !hasAccess ? 'opacity-60 pointer-events-none' : ''}`}>
                     {/* Product Selection */}
                     <div>
                         <label className="mb-3 block text-black dark:text-white">
@@ -291,7 +313,7 @@ const NewBuyOffer = () => {
 
                     <button
                         type="submit"
-                        disabled={isLoading}
+                        disabled={isLoading || !hasAccess}
                         className="inline-flex items-center justify-center rounded-md bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                     >
                         {isLoading ? 'Kreiranje...' : 'Kreiraj Ponudu'}

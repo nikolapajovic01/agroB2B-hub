@@ -15,6 +15,7 @@ import productRoute from './routes/product.router'
 import userRouter from './routes/user.router'
 import exportRoutes from './routes/export.routes'
 import productInterestRouter from './routes/productInterest.router'
+import subscriptionRouter from './routes/subscription.router'
 
 import { errorHandler, handle404 } from './middleware/error.middleware'
 
@@ -53,6 +54,7 @@ app.use('/api/products', productRoute)
 app.use('/api/user', userRouter);
 app.use('/api/exports', exportRoutes);
 app.use('/api/product-interests', productInterestRouter);
+app.use('/api/subscription', subscriptionRouter);
 
 // 404 and global error handling
 app.use(handle404)

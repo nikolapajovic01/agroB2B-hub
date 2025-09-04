@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardBody, CardHeader } from '../components/ui/card';
-import { Button } from '../components/ui/button';
 import { Switch } from '../components/ui/switch';
 import { getAuthToken, getUserDetails } from '../utils/authUtils';
 import DefaultLayout from '../layout/DefaultLayout';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
+import { useSubscription } from '../contexts/SubscriptionContext';
 
 interface Product {
   id: number;
@@ -28,6 +28,7 @@ interface ProductInterest {
 }
 
 const NotificationPreferences: React.FC = () => {
+  const { hasAccess, isLoading } = useSubscription();
   const [products, setProducts] = useState<Product[]>([]);
   const [productInterests, setProductInterests] = useState<ProductInterest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -207,12 +208,26 @@ const NotificationPreferences: React.FC = () => {
               Izaberite proizvode za koje želite da dobijate SMS poruke kada se pojave nove ponude ili potražnje na tržištu.
               Promene se automatski čuvaju kada kliknete na prekidač.
             </p>
+            {!isLoading && !hasAccess && (
+              <div className="mb-6 rounded-lg border border-amber-200 bg-gradient-to-r from-amber-50 to-amber-100/60 p-4 text-amber-800 dark:from-amber-900/20 dark:to-amber-800/10 dark:border-amber-800">
+                <div className="flex items-start gap-3">
+                  <svg className="h-5 w-5 mt-0.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9V7a4 4 0 10-8 0v2a2 2 0 00-2 2v7a2 2 0 002 2h8a2 2 0 002-2v-7a2 2 0 00-2-2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 13v3" />
+                  </svg>
+                  <div>
+                    <p className="font-medium">Premium funkcionalnost</p>
+                    <p className="text-sm opacity-90">Praćenje proizvoda i SMS obaveštenja dostupni su samo uz aktivnu pretplatu.</p>
+                  </div>
+                </div>
+              </div>
+            )}
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {products.map((product) => (
                 <div
                   key={product.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                  className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${hasAccess ? 'hover:bg-gray-50 dark:hover:bg-gray-700/30' : 'opacity-60 cursor-not-allowed'}`}
                 >
                   <div className="flex items-center gap-3">
                     {product.image && (
@@ -224,10 +239,21 @@ const NotificationPreferences: React.FC = () => {
                     )}
                     <span className="font-medium">{product.name}</span>
                   </div>
-                  <Switch
-                    checked={isFollowing(product.id)}
-                    onCheckedChange={() => toggleFollow(product.id)}
-                  />
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={isFollowing(product.id)}
+                      onCheckedChange={() => toggleFollow(product.id)}
+                      disabled={isLoading || !hasAccess}
+                    />
+                    {!isLoading && !hasAccess && (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+                        <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                        </svg>
+                        Premium
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
