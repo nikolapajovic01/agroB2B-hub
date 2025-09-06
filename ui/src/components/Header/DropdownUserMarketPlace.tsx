@@ -23,6 +23,7 @@ const DropdownUserMarketPlace = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [companyDetails, setCompanyDetails] = useState<CompanyDetails | null>(null);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState<string | null>(null);
   const userString = localStorage.getItem('user');
   const user = userString ? JSON.parse(userString) : null;
@@ -34,6 +35,24 @@ const DropdownUserMarketPlace = () => {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
+        // Proveri cache prvo
+        if (userType === 'company') {
+          const cachedCompany = localStorage.getItem('companyDetails');
+          if (cachedCompany) {
+            setCompanyDetails(JSON.parse(cachedCompany));
+            setIsLoading(false);
+            return; // Ne pozivaj API ako imamo cache
+          }
+        } else {
+          const cachedUser = localStorage.getItem('userDetails');
+          if (cachedUser) {
+            setUserDetails(JSON.parse(cachedUser));
+            setIsLoading(false);
+            return; // Ne pozivaj API ako imamo cache
+          }
+        }
+
+        setIsLoading(true);
         const token = getAuthToken();
         if (!token) {
           throw new Error('No authentication token found');
@@ -52,6 +71,8 @@ const DropdownUserMarketPlace = () => {
 
           const data = await response.json();
           setCompanyDetails(data);
+          // Sačuvaj u cache
+          localStorage.setItem('companyDetails', JSON.stringify(data));
         } else {
           const response = await fetch(`${API_URL}/api/user/details`, {
             headers: {
@@ -65,10 +86,14 @@ const DropdownUserMarketPlace = () => {
 
           const data = await response.json();
           setUserDetails(data);
+          // Sačuvaj u cache
+          localStorage.setItem('userDetails', JSON.stringify(data));
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
         console.error('Error fetching details:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -102,6 +127,9 @@ const DropdownUserMarketPlace = () => {
   });
 
   const handleLogout = () => {
+    // Očisti cache kada se korisnik odjavi
+    localStorage.removeItem('companyDetails');
+    localStorage.removeItem('userDetails');
     logout();
   };
 
@@ -115,28 +143,40 @@ const DropdownUserMarketPlace = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {userType === 'company' 
-              ? companyDetails?.name || 'Loading...'
-              : userDetails?.name || 'Loading...'
+            {isLoading 
+              ? 'Loading...' 
+              : userType === 'company' 
+                ? companyDetails?.name || 'N/A'
+                : userDetails?.name || 'N/A'
             }
           </span>
           <span className="block text-xs">
-            {userType === 'company'
-              ? `PIB: ${companyDetails?.pibNumber || 'Loading...'}`
-              : userDetails?.email || 'Loading...'
+            {isLoading 
+              ? 'Loading...' 
+              : userType === 'company'
+                ? `PIB: ${companyDetails?.pibNumber || 'N/A'}`
+                : userDetails?.email || 'N/A'
             }
           </span>
         </span>
 
         <span className="h-12 w-12 rounded-full flex items-center justify-center overflow-hidden">
-          <img 
-            src={userType === 'company' 
-              ? companyDetails?.photoUrl || UserOne 
-              : userDetails?.photoUrl || UserOne
-            } 
-            alt="User" 
-            className="w-full h-full object-cover" 
-          />
+          {isLoading ? (
+            <div className="w-full h-full bg-gray-200 dark:bg-gray-700 animate-pulse rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+              </svg>
+            </div>
+          ) : (
+            <img 
+              src={userType === 'company' 
+                ? companyDetails?.photoUrl || UserOne 
+                : userDetails?.photoUrl || UserOne
+              } 
+              alt="User" 
+              className="w-full h-full object-cover" 
+            />
+          )}
         </span>
 
         <svg

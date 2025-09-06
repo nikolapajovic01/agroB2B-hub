@@ -4,14 +4,14 @@ import { prisma } from '../config/prisma'
 import { CONFIG } from '../config'
 
 interface JwtPayload {
-  userId: number
+  id: number
   companyId: number
   userType: string
 }
 
 export interface AuthRequest extends Request {
   user?: {
-    userId: number;
+    id: number;
     companyId: number
     userType: string
   }
@@ -28,7 +28,7 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     const decoded = jwt.verify(token, CONFIG.JWT_SECRET) as JwtPayload
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      where: { id: decoded.id },
       include: { company: true },
     })
 
@@ -37,7 +37,7 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     }
 
     req.user = {
-      userId: decoded.userId,
+      id: decoded.id,
       companyId: decoded.companyId,
       userType: decoded.userType,
     }

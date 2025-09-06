@@ -16,20 +16,6 @@ export const getSubscriptionInfo = async (req: AuthenticatedRequest, res: Respon
   }
 }
 
-export const startTrial = async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    if (!req.user?.companyId) {
-      return res.status(401).json({ error: 'Company not found' })
-    }
-
-    const { trialDays = 7 } = req.body
-    const result = await SubscriptionService.startTrial(req.user.companyId, trialDays)
-    res.json({ message: 'Trial started successfully', company: result })
-  } catch (error) {
-    console.error('Start trial error:', error)
-    res.status(500).json({ error: 'Internal server error' })
-  }
-}
 
 export const activateSubscription = async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -61,21 +47,6 @@ export const cancelSubscription = async (req: AuthenticatedRequest, res: Respons
 }
 
 // Admin functions
-export const extendTrial = async (req: Request, res: Response) => {
-  try {
-    const { companyId, additionalDays } = req.body
-    
-    if (!companyId || !additionalDays) {
-      return res.status(400).json({ error: 'Company ID and additional days are required' })
-    }
-
-    const result = await SubscriptionService.extendTrial(companyId, additionalDays)
-    res.json({ message: 'Trial extended successfully', company: result })
-  } catch (error) {
-    console.error('Extend trial error:', error)
-    res.status(500).json({ error: 'Internal server error' })
-  }
-}
 
 export const checkExpiredSubscriptions = async (req: Request, res: Response) => {
   try {

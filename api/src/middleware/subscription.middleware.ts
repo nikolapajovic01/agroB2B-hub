@@ -24,7 +24,7 @@ export const checkSubscription = async (
       where: { id: req.user.companyId },
       select: {
         subscriptionStatus: true,
-        trialEndDate: true,
+        subscriptionStartDate: true,
         subscriptionEndDate: true,
         isPaid: true
       }
@@ -37,13 +37,9 @@ export const checkSubscription = async (
     const now = new Date()
     let hasAccess = false
 
-    // Check if company has active subscription
-    if (company.subscriptionStatus === 'active' && company.subscriptionEndDate) {
+    // Check if company has active paid subscription
+    if (company.subscriptionStatus === 'active' && company.subscriptionEndDate && company.isPaid) {
       hasAccess = company.subscriptionEndDate > now
-    }
-    // Check if company is in trial period
-    else if (company.subscriptionStatus === 'trial' && company.trialEndDate) {
-      hasAccess = company.trialEndDate > now
     }
 
     // Add subscription info to request
@@ -51,7 +47,7 @@ export const checkSubscription = async (
       hasAccess,
       status: company.subscriptionStatus,
       isPaid: company.isPaid,
-      trialEndDate: company.trialEndDate,
+      subscriptionStartDate: company.subscriptionStartDate,
       subscriptionEndDate: company.subscriptionEndDate
     }
 
@@ -70,7 +66,7 @@ export const requireSubscription = (
   if (!req.subscription?.hasAccess) {
     return res.status(403).json({ 
       error: 'Subscription required',
-      message: 'This feature requires an active subscription or trial period',
+      message: 'This feature requires an active paid subscription',
       subscription: req.subscription
     })
   }
@@ -85,7 +81,7 @@ declare global {
         hasAccess: boolean
         status: string
         isPaid: boolean
-        trialEndDate: Date | null
+        subscriptionStartDate: Date | null
         subscriptionEndDate: Date | null
       }
     }

@@ -4,13 +4,13 @@ import { fetchUserDetails } from '../services/user.service';
 
 interface AuthRequest extends Request {
   user?: {
-    userId: number;
+    id: number;
   };
 }
 
 export const getUserDetails = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
     const user = await fetchUserDetails(userId);

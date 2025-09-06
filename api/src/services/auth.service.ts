@@ -21,17 +21,12 @@ export const registerUser = async (data: any) => {
       throw new Error('Naziv kompanije i PIB su obavezni')
     }
 
-    // Set trial end date (7 days from now)
-    const trialEndDate = new Date()
-    trialEndDate.setDate(trialEndDate.getDate() + 7)
-
     const company = await prisma.company.create({
       data: { 
         name: companyName, 
         pibNumber, 
         isVerified: false,
-        subscriptionStatus: 'trial',
-        trialEndDate,
+        subscriptionStatus: 'inactive',
         isPaid: false
       },
     })
@@ -67,7 +62,7 @@ export const loginUser = async ({ email, password }: { email: string; password: 
 
   const token = jwt.sign(
     {
-      userId: user.id,
+      id: user.id,
       companyId: user.companyId,
       userType: user.userType,
     },

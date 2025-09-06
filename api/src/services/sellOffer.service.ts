@@ -60,7 +60,7 @@ export const createSellOfferService = async (req: AuthRequest) => {
       quantity: parseFloat(fields.quantity?.[0] || '0'),
       photos: photoUrls,
       companyId: isCompanyUser ? req.user.companyId : null,
-      userId: isCompanyUser ? null : req.user.userId,  // Ako nije kompanija, vezujemo userId
+      userId: isCompanyUser ? null : req.user.id,  // Ako nije kompanija, vezujemo userId
       administrativeStatus: 'PENDING',
     },
   })
@@ -118,7 +118,7 @@ export const createSellOfferService = async (req: AuthRequest) => {
           <li>Količina: ${fields.quantity?.[0]} kg</li>
           <li>Cena: ${fields.price?.[0]} €/kg</li>
           <li>Lokacija: ${fields.city?.[0]}</li>
-          <li>User ID: ${req.user.userId}</li>
+          <li>User ID: ${req.user.id}</li>
         </ul>
       `
     )
