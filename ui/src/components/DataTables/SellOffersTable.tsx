@@ -117,7 +117,7 @@ const DataTableOne = () => {
     {
       Header: 'Proizvod',
       accessor: (row) => `${row.variant.product.name} - ${row.variant.name}`,
-      Cell: ({ value }) => (
+      Cell: ({ value }: { value: string }) => (
         <div className="flex items-center gap-3">
           <div className="h-8 w-8">
             <img
@@ -133,14 +133,14 @@ const DataTableOne = () => {
     {
       Header: 'Važi od',
       accessor: 'dateFrom',
-      Cell: ({ value }) => (
+      Cell: ({ value }: { value: string }) => (
         <span className="text-sm md:text-base">{new Date(value).toLocaleDateString()}</span>
       ),
     },
     {
       Header: 'Važi do',
       accessor: 'dateTo',
-      Cell: ({ value }) => (
+      Cell: ({ value }: { value: string | null }) => (
         value
           ? <span className="text-sm md:text-base">{new Date(value).toLocaleDateString('sr-RS')}</span>
           : <span className="text-gray-500 italic">Rok nije specificiran</span>
@@ -149,7 +149,7 @@ const DataTableOne = () => {
     {
       Header: 'Količina',
       accessor: 'quantity',
-      Cell: ({ value }) => <span>{value} kg</span>,
+      Cell: ({ value }: { value: number }) => <span>{value} kg</span>,
     },
     {
       Header: 'Mesto',
@@ -158,12 +158,12 @@ const DataTableOne = () => {
     {
       Header: 'Cena',
       accessor: 'price',
-      Cell: ({ value }) => <span>{value} €</span>,
+      Cell: ({ value }: { value: string }) => <span>{value} €</span>,
     },
     {
       Header: 'Status',
       accessor: 'status',
-      Cell: ({ value }) => (
+      Cell: ({ value }: { value: string }) => (
         <span className={`px-3 py-1 rounded-full ${
           value === 'Aktivan' 
             ? 'bg-success/10 text-success shadow-success/50 shadow-sm' 
@@ -176,7 +176,7 @@ const DataTableOne = () => {
   ], []);
 
   const tableData = useMemo(() => data, [data]);
-  const gatedData = useMemo(() => (subscriptionLoading ? tableData : (hasAccess ? tableData : tableData.slice(0, 3))), [tableData, hasAccess, subscriptionLoading]);
+  const gatedData = useMemo(() => (subscriptionLoading ? tableData : (hasAccess ? tableData : tableData.slice(0, 10))), [tableData, hasAccess, subscriptionLoading]);
   const tableInstance = useTable<SellOffer>(
     {
       columns,
@@ -201,7 +201,6 @@ const DataTableOne = () => {
     canPreviousPage,
     pageOptions,
     setPageSize,
-    gotoPage,
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;

@@ -3,11 +3,9 @@ import {
   useTable,
   useSortBy,
   useGlobalFilter,
-  useFilters,
   usePagination,
   // Column as TableColumn,
 } from 'react-table';
-import ColumnFilter from './ColumnFilter';
 import { useNavigate } from 'react-router-dom';
 import {getAuthToken, getUserDetails} from "../../utils/authUtils";
 import { useSubscription } from '../../contexts/SubscriptionContext';
@@ -196,7 +194,7 @@ const DataTableOne = () => {
 
   // const columns = useMemo(() => column, []);
   const tableData = useMemo(() => data, [data]);
-  const gatedData = useMemo(() => (subscriptionLoading ? tableData : (hasAccess ? tableData : tableData.slice(0, 3))), [tableData, hasAccess, subscriptionLoading]);
+  const gatedData = useMemo(() => (subscriptionLoading ? tableData : (hasAccess ? tableData : tableData.slice(0, 10))), [tableData, hasAccess, subscriptionLoading]);
 
   const tableInstance = useTable<BuyOffer>(
     {
