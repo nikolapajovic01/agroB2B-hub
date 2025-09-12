@@ -16,13 +16,13 @@ const ExportStatisticDashboard2025: React.FC = () => {
       </h2>
       <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 text-center">
         <span className="bg-primary/10 px-4 py-1 rounded-full">
-          Period: Januar - Jun 2025
+          Period: Januar - Avgust 2025
         </span>
       </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats 
           title="Ukupan izvoz" 
-          total={isLoading ? "..." : (hasAccess ? "31.263 tona" : "*** tona")} 
+          total={isLoading ? "..." : (hasAccess ? "39.665 tona" : "*** tona")} 
           rate={isLoading ? "..." : (hasAccess ? "25.7%" : "***%")} 
           levelDown
         >
@@ -46,7 +46,7 @@ const ExportStatisticDashboard2025: React.FC = () => {
         </CardDataStats>
         <CardDataStats 
           title="Ukupna vrednost izvoza" 
-          total={isLoading ? "..." : (hasAccess ? "€125.1M" : "€***M")} 
+          total={isLoading ? "..." : (hasAccess ? "€171.5M" : "€***M")} 
           rate={isLoading ? "..." : (hasAccess ? "15.7%" : "***%")} 
           levelUp
         >
@@ -74,7 +74,7 @@ const ExportStatisticDashboard2025: React.FC = () => {
         </CardDataStats>
         <CardDataStats 
           title="Prosečna cena Rolend" 
-          total={isLoading ? "..." : (hasAccess ? "€4,33" : "€***")} 
+          total={isLoading ? "..." : (hasAccess ? "€4,65" : "€***")} 
           rate={isLoading ? "..." : (hasAccess ? "56.3%" : "***%")} 
           levelUp
         >
@@ -98,7 +98,7 @@ const ExportStatisticDashboard2025: React.FC = () => {
         </CardDataStats>
         <CardDataStats 
           title="Prosečna cena Griz" 
-          total={isLoading ? "..." : (hasAccess ? "€3,03" : "€***")} 
+          total={isLoading ? "..." : (hasAccess ? "€3,27" : "€***")} 
           rate={isLoading ? "..." : (hasAccess ? "59.5%" : "***%")} 
           levelUp
         >

@@ -15,7 +15,7 @@ const TransactionList2025: React.FC = () => {
   const itemsPerPage = 25;
 
   const months = [
-    'Sve', 'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun'
+    'Sve', 'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust'
   ];
 
   const getMonthNumber = (monthName: string): number => {
