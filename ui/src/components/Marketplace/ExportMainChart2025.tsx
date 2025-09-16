@@ -266,7 +266,7 @@ const ExportMainChart2025: React.FC = () => {
         },
       },
       min: state.activeView === 'quantity' ? 0 : 1,
-      max: state.activeView === 'quantity' ? 5000000 : 6,
+      max: state.activeView === 'quantity' ? 5000000 : 8,
       labels: {
         formatter: (value) => state.activeView === 'quantity' 
           ? `${Math.round(value).toLocaleString()} kg`
