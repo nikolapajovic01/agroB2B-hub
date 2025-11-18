@@ -91,7 +91,9 @@ const options: ApexOptions = {
       'Maj',
       'Jun',
       'Jul',
-      'Avgust'
+      'Avgust',
+      'Septembar',
+      'Oktobar'
     ],
     axisBorder: {
       show: false,
@@ -149,7 +151,9 @@ const ExportMainChart2025: React.FC = () => {
         2756302, // May
         2310934, // June
         3344852, // July
-        2803213 // August
+        2803213, // August
+        3228968, // September
+        2912057 // October
 
       ],
     },
@@ -163,7 +167,9 @@ const ExportMainChart2025: React.FC = () => {
         1269412, // May
         668693, // June
         289993, // July
-        730219 // August
+        730219, // August
+        970489, // September
+        790120 // October
       ],
     },
     {
@@ -176,7 +182,9 @@ const ExportMainChart2025: React.FC = () => {
         172448, // May
         114748, // June
         138634, // July
-        160844 // August
+        160844, // August
+        270073, // September
+        309980 // October
       ],
     },
     {
@@ -189,7 +197,9 @@ const ExportMainChart2025: React.FC = () => {
         385303,  // May
         424343, // June
         144558, // July
-        158509 // August
+        158509, // August
+        260507, // September
+        350714 // October
       ],
     },
   ];
@@ -205,7 +215,9 @@ const ExportMainChart2025: React.FC = () => {
         4.44, // May
         4.49, // June
         5.20, // July
-        6.03 // August
+        6.03, // August
+        6.38, // September
+        6.59 // October
       ],
     },
     {
@@ -218,7 +230,9 @@ const ExportMainChart2025: React.FC = () => {
         2.95, // May
         3.1, // June
         3.24, // July
-        4.74 // August
+        4.74, // August
+        5.30, // September
+        5.52 // October
       ],
     },
     {
@@ -231,7 +245,9 @@ const ExportMainChart2025: React.FC = () => {
         5.02, // May
         4.85, // June
         5.97, // July
-        7.22 // August
+        7.22, // August
+        7.52, // September
+        7.99 // October
       ],
     },
     {
@@ -244,7 +260,9 @@ const ExportMainChart2025: React.FC = () => {
         3.47, // May
         3.29, // June
         3.94, // July
-        5.26 // August
+        5.26, // August
+        5.68, // September
+        6.35 // October
       ],
     },
   ];
@@ -294,7 +312,7 @@ const ExportMainChart2025: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-primary">Rolend</p>
-              <p className="text-sm font-medium">24,117 tona</p>
+              <p className="text-sm font-medium">30,258 tona</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -304,7 +322,7 @@ const ExportMainChart2025: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-secondary">Griz</p>
-              <p className="text-sm font-medium">7,818 tona</p>
+              <p className="text-sm font-medium">9,578 tona</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -314,7 +332,7 @@ const ExportMainChart2025: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-primary">Organic</p>
-              <p className="text-sm font-medium">2,338 tona</p>
+              <p className="text-sm font-medium">2,918 tona</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -324,7 +342,7 @@ const ExportMainChart2025: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-secondary">Ostalo</p>
-              <p className="text-sm font-medium">2,866 tona</p>
+              <p className="text-sm font-medium">3,477 tona</p>
             </div>
           </div>
         </div>

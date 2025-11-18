@@ -8,11 +8,6 @@ interface SidebarProps {
   setSidebarOpen: (arg: boolean) => void;
 }
 
-interface SidebarLinkGroupProps {
-  activeCondition: boolean;
-  children: (handleClick: () => void, open: boolean) => React.ReactNode;
-}
-
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
@@ -462,6 +457,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       </li>
       <li>
         <NavLink
+          to="/ai"
+          className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+            pathname.includes('ai') && 'bg-graydark dark:bg-meta-4'
+          }`}
+        >
+          <svg
+            className="fill-current"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 17H13V15H11V17ZM11 13H13C13.55 13 14 12.55 14 12V7H10V9H12V12H11C10.45 12 10 12.45 10 13V14C10 14.55 10.45 15 11 15Z"
+              fill="currentColor"
+            />
+          </svg>
+          AI Agent
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
           to="/profile"
           className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
             pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'
@@ -593,6 +611,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             />
           </svg>
           Spisak Kompanija
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/ai"
+          className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+            pathname.includes('ai') && 'bg-graydark dark:bg-meta-4'
+          }`}
+        >
+          <svg
+            className="fill-current"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 17H13V15H11V17ZM11 13H13C13.55 13 14 12.55 14 12V7H10V9H12V12H11C10.45 12 10 12.45 10 13V14C10 14.55 10.45 15 11 15Z"
+              fill="currentColor"
+            />
+          </svg>
+          AI Agent
         </NavLink>
       </li>
       <li>

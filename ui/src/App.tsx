@@ -27,6 +27,7 @@ import ProductVariants from './pages/Prices/ProductVariants';
 import CompaniesList from './pages/Companies/CompaniesList';
 import NotificationPreferences from './pages/NotificationPreferences';
 import Pricing from './pages/Pricing';
+import AIChat from './pages/Pages/AIChat';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -521,6 +522,12 @@ function App() {
               <PageTitle title="Company Not Verified" />
               <CompanyNotVerified />
             </>
+          }
+        />
+        <Route
+          path="/ai"
+          element={
+            <ProtectedRoute element={AIChat} title="AI Agent" />
           }
         />
         <Route

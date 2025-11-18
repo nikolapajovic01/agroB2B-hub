@@ -4,7 +4,7 @@ import 'jsvectormap/dist/maps/world'
 import 'jsvectormap/dist/css/jsvectormap.css'
 import axios from 'axios';
 
-type Period = 'Celokupna 2025' | 'Januar' | 'Februar' | 'Mart' | 'April' | 'Maj' | 'Jun' | 'Jul' | 'Avgust';
+type Period = 'Celokupna 2025' | 'Januar' | 'Februar' | 'Mart' | 'April' | 'Maj' | 'Jun' | 'Jul' | 'Avgust' | 'Septembar' | 'Oktobar';
 
 type ExportData = {
   total: Array<{ countryName: string; percentage: string }>;
@@ -107,6 +107,8 @@ const Map2025: React.FC = () => {
                 <option value="Jun" className='dark:bg-boxdark'>Jun</option>
                 <option value="Jul" className='dark:bg-boxdark'>Jul</option>
                 <option value="Avgust" className='dark:bg-boxdark'>Avgust</option>
+                <option value="Septembar" className='dark:bg-boxdark'>Septembar</option>
+                <option value="Oktobar" className='dark:bg-boxdark'>Oktobar</option>
               </select>
               <span className="absolute top-1/2 right-3 z-10 -translate-y-1/2">
                 <svg

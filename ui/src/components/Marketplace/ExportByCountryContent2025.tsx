@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-type Period = 'Celokupna 2025' | 'Januar' | 'Februar' | 'Mart' | 'April' | 'Maj' | 'Jun' | 'Jul' | 'Avgust';
+type Period = 'Celokupna 2025' | 'Januar' | 'Februar' | 'Mart' | 'April' | 'Maj' | 'Jun' | 'Jul' | 'Avgust' | 'Septembar' | 'Oktobar';
 
 type ExportRecord = {
   countryName: string;
@@ -64,6 +64,8 @@ const ExportByCountryContent2025: React.FC = () => {
               <option value="Jun">Jun</option>
               <option value="Jul">Jul</option>
               <option value="Avgust">Avgust</option>
+              <option value="Septembar">Septembar</option>
+              <option value="Oktobar">Oktobar</option>
             </select>
           </div>
         </div>
