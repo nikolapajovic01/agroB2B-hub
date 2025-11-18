@@ -22,8 +22,8 @@ const ExportStatisticDashboard2025: React.FC = () => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats 
           title="Ukupan izvoz" 
-          total={isLoading ? "..." : (hasAccess ? "39.665 tona" : "*** tona")} 
-          rate={isLoading ? "..." : (hasAccess ? "25.7%" : "***%")} 
+          total={isLoading ? "..." : (hasAccess ? "49.489 tona" : "*** tona")} 
+          rate={isLoading ? "..." : (hasAccess ? "24%" : "***%")} 
           levelDown
         >
           <svg
@@ -46,8 +46,8 @@ const ExportStatisticDashboard2025: React.FC = () => {
         </CardDataStats>
         <CardDataStats 
           title="Ukupna vrednost izvoza" 
-          total={isLoading ? "..." : (hasAccess ? "€171.5M" : "€***M")} 
-          rate={isLoading ? "..." : (hasAccess ? "15.7%" : "***%")} 
+          total={isLoading ? "..." : (hasAccess ? "€234.1M" : "€***M")} 
+          rate={isLoading ? "..." : (hasAccess ? "14.6%" : "***%")} 
           levelUp
         >
           <svg
@@ -74,8 +74,8 @@ const ExportStatisticDashboard2025: React.FC = () => {
         </CardDataStats>
         <CardDataStats 
           title="Prosečna cena Rolend" 
-          total={isLoading ? "..." : (hasAccess ? "€4,65" : "€***")} 
-          rate={isLoading ? "..." : (hasAccess ? "56.3%" : "***%")} 
+          total={isLoading ? "..." : (hasAccess ? "€5,02" : "€***")} 
+          rate={isLoading ? "..." : (hasAccess ? "63.9%" : "***%")} 
           levelUp
         >
           <svg
@@ -98,8 +98,8 @@ const ExportStatisticDashboard2025: React.FC = () => {
         </CardDataStats>
         <CardDataStats 
           title="Prosečna cena Griz" 
-          total={isLoading ? "..." : (hasAccess ? "€3,27" : "€***")} 
-          rate={isLoading ? "..." : (hasAccess ? "59.5%" : "***%")} 
+          total={isLoading ? "..." : (hasAccess ? "€3,70" : "€***")} 
+          rate={isLoading ? "..." : (hasAccess ? "81.6%" : "***%")} 
           levelUp
         >
           <svg
