@@ -16,7 +16,7 @@ const ExportStatisticDashboard2025: React.FC = () => {
       </h2>
       <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 text-center">
         <span className="bg-primary/10 px-4 py-1 rounded-full">
-          Period: Januar - Avgust 2025
+          Period: Januar - Oktobar 2025
         </span>
       </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
