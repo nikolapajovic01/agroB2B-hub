@@ -66,6 +66,8 @@ const ExportByCountryContent2025: React.FC = () => {
               <option value="Avgust">Avgust</option>
               <option value="Septembar">Septembar</option>
               <option value="Oktobar">Oktobar</option>
+              <option value="Novembar">Novembar</option>
+              <option value="Decembar">Decembar</option>
             </select>
           </div>
         </div>
